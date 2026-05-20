@@ -15,3 +15,6 @@ Thumbs.db
 .vscode/
 .idea/
 *.log
+
+# Westpac corporate IDE artifacts
+.github/instructions/
