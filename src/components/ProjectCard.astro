@@ -1,0 +1,39 @@
+---
+interface Props { title: string; href?: string; tags: string[]; }
+const { title, href = '#', tags } = Astro.props;
+---
+<a class="project-card" href={href} rel="noopener">
+  <h3>{title}</h3>
+  <p><slot /></p>
+  <ul class="project-card__tags">
+    {tags.map((t) => <li>{t}</li>)}
+  </ul>
+</a>
+<style>
+  .project-card {
+    display: flex; flex-direction: column; gap: var(--space-3);
+    padding: var(--space-6);
+    background: var(--bg-elev);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    color: var(--fg);
+    transition: transform 200ms ease, border-color 200ms ease, background 200ms ease;
+  }
+  .project-card:hover {
+    transform: translateY(-3px);
+    border-color: var(--accent);
+    text-decoration: none;
+  }
+  .project-card h3 { margin: 0; color: var(--accent); font-size: var(--type-lg); }
+  .project-card__tags {
+    list-style: none; padding: 0; margin: 0;
+    display: flex; flex-wrap: wrap; gap: var(--space-2);
+  }
+  .project-card__tags li {
+    padding: 2px var(--space-2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-pill);
+    font-family: var(--font-mono); font-size: 0.75rem;
+    color: var(--fg-muted);
+  }
+</style>

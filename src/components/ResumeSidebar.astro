@@ -1,0 +1,104 @@
+---
+const sections = [
+  { id: 'about', label: 'About' },
+  { id: 'skills', label: 'Skills' },
+  { id: 'experience', label: 'Experience' },
+  { id: 'education', label: 'Education' },
+  { id: 'projects', label: 'Projects' },
+  { id: 'contact', label: 'Contact' },
+];
+---
+<aside class="resume-sidebar">
+  <div>
+    <h1>Andi Yang</h1>
+    <p class="resume-sidebar__role">Software Engineer</p>
+    <p class="resume-sidebar__bio">
+      Building reliable web platforms and developer tooling in Sydney.
+    </p>
+  </div>
+
+  <nav aria-label="Section navigation" class="resume-sidebar__nav">
+    <ul>
+      {sections.map((s) => (
+        <li>
+          <a href={`#${s.id}`} data-nav-id={s.id}>
+            <span class="resume-sidebar__bar" aria-hidden="true"></span>
+            {s.label}
+          </a>
+        </li>
+      ))}
+    </ul>
+  </nav>
+
+  <ul class="resume-sidebar__socials" aria-label="Social links">
+    <li><a href="https://github.com/AndiYangcs" rel="noopener">GitHub</a></li>
+    <li><a href="https://www.linkedin.com/" rel="noopener">LinkedIn</a></li>
+    <li><a href="mailto:hello@example.com">Email</a></li>
+  </ul>
+</aside>
+
+<script>
+  // Scroll-spy: highlight the section currently in view.
+  const links = document.querySelectorAll<HTMLAnchorElement>('[data-nav-id]');
+  const idToLink = new Map<string, HTMLAnchorElement>();
+  links.forEach((a) => idToLink.set(a.dataset.navId!, a));
+
+  const obs = new IntersectionObserver(
+    (entries) => {
+      for (const e of entries) {
+        const link = idToLink.get(e.target.id);
+        if (!link) continue;
+        if (e.isIntersecting) {
+          links.forEach((l) => l.removeAttribute('aria-current'));
+          link.setAttribute('aria-current', 'true');
+        }
+      }
+    },
+    { rootMargin: '-40% 0px -55% 0px' },
+  );
+  document.querySelectorAll<HTMLElement>('main section[id]').forEach((s) => obs.observe(s));
+</script>
+
+<style>
+  .resume-sidebar {
+    position: sticky; top: var(--space-12);
+    display: flex; flex-direction: column; gap: var(--space-8);
+    min-height: calc(100vh - var(--space-16));
+    padding-right: var(--space-6);
+  }
+  .resume-sidebar h1 {
+    margin: 0 0 var(--space-2);
+    font-size: var(--type-3xl);
+    color: var(--fg);
+  }
+  .resume-sidebar__role {
+    margin: 0; color: var(--accent); font-family: var(--font-mono);
+  }
+  .resume-sidebar__bio { color: var(--fg-muted); margin-top: var(--space-4); }
+  .resume-sidebar__nav ul {
+    list-style: none; padding: 0; margin: 0;
+    display: flex; flex-direction: column; gap: var(--space-3);
+  }
+  .resume-sidebar__nav a {
+    display: inline-flex; align-items: center; gap: var(--space-3);
+    color: var(--fg-muted); font-family: var(--font-mono);
+    font-size: var(--type-sm); text-transform: uppercase; letter-spacing: 0.08em;
+  }
+  .resume-sidebar__nav a:hover { color: var(--fg); text-decoration: none; }
+  .resume-sidebar__bar {
+    display: inline-block; width: 1.5rem; height: 1px; background: var(--fg-muted);
+    transition: width 200ms ease, background 200ms ease;
+  }
+  .resume-sidebar__nav a[aria-current="true"] { color: var(--accent); }
+  .resume-sidebar__nav a[aria-current="true"] .resume-sidebar__bar {
+    width: 3rem; background: var(--accent);
+  }
+  .resume-sidebar__socials {
+    list-style: none; padding: 0; margin: 0;
+    display: flex; gap: var(--space-4);
+    font-family: var(--font-mono); font-size: var(--type-sm);
+  }
+  @media (max-width: 900px) {
+    .resume-sidebar { position: static; min-height: 0; padding-right: 0; }
+  }
+</style>

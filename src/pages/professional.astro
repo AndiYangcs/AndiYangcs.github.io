@@ -1,0 +1,128 @@
+---
+import PageLayout from '../layouts/PageLayout.astro';
+import ResumeSidebar from '../components/ResumeSidebar.astro';
+import ResumeSection from '../components/ResumeSection.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+---
+<PageLayout title="Professional Andi" persona="professional">
+  <div class="resume-grid">
+    <ResumeSidebar />
+
+    <main class="resume-content">
+      <ResumeSection id="about" title="About">
+        <p>
+          I'm an engineer who enjoys turning messy product problems into
+          systems that are pleasant to operate. Most recently I've been
+          working on developer platforms — internal tools, build pipelines,
+          and the unglamorous glue that makes engineering teams faster.
+        </p>
+      </ResumeSection>
+
+      <ResumeSection id="skills" title="Skills">
+        <ul class="skills">
+          <li><strong>Languages:</strong> TypeScript, Python, Go, SQL</li>
+          <li><strong>Frameworks:</strong> React, Astro, Node.js, FastAPI</li>
+          <li><strong>Cloud:</strong> AWS, GitHub Actions, Docker</li>
+          <li><strong>Practices:</strong> TDD, code review, observability, DX</li>
+        </ul>
+      </ResumeSection>
+
+      <ResumeSection id="experience" title="Experience">
+        <article class="role">
+          <header>
+            <h3>Software Engineer · Westpac</h3>
+            <span>2023 — Present</span>
+          </header>
+          <ul>
+            <li>Built internal tooling that reduced deploy time for a critical service.</li>
+            <li>Owned the developer experience for a multi-team platform.</li>
+          </ul>
+          <ul class="tags">
+            <li>TypeScript</li><li>AWS</li><li>GitHub Actions</li>
+          </ul>
+        </article>
+
+        <article class="role">
+          <header>
+            <h3>Previous Role · Earlier Company</h3>
+            <span>2021 — 2023</span>
+          </header>
+          <ul>
+            <li>Shipped customer-facing features in a React + Node stack.</li>
+            <li>Mentored junior engineers through code review and pairing.</li>
+          </ul>
+          <ul class="tags">
+            <li>React</li><li>Node.js</li><li>PostgreSQL</li>
+          </ul>
+        </article>
+      </ResumeSection>
+
+      <ResumeSection id="education" title="Education">
+        <article class="role">
+          <header>
+            <h3>BSc Computer Science · University</h3>
+            <span>2017 — 2020</span>
+          </header>
+          <p>Coursework: algorithms, distributed systems, compilers.</p>
+        </article>
+      </ResumeSection>
+
+      <ResumeSection id="projects" title="Projects">
+        <div class="project-grid">
+          <ProjectCard
+            title="AndiYangcs.github.io"
+            href="https://github.com/AndiYangcs/AndiYangcs.github.io"
+            tags={["Astro","React","TypeScript"]}
+          >
+            This site. Astro + React islands, deployed to GitHub Pages.
+          </ProjectCard>
+          <ProjectCard
+            title="Sample Project"
+            href="#"
+            tags={["TypeScript","Node.js"]}
+          >
+            Placeholder card — will be replaced with real projects.
+          </ProjectCard>
+        </div>
+      </ResumeSection>
+
+      <ResumeSection id="contact" title="Contact">
+        <p>
+          Easiest way to reach me is via
+          <a href="mailto:hello@example.com">email</a> or
+          <a href="https://www.linkedin.com/" rel="noopener">LinkedIn</a>.
+        </p>
+      </ResumeSection>
+    </main>
+  </div>
+
+  <style>
+    .resume-grid {
+      display: grid;
+      grid-template-columns: var(--sidebar-w) minmax(0, 1fr);
+      gap: var(--space-12);
+    }
+    @media (max-width: 900px) {
+      .resume-grid { grid-template-columns: 1fr; gap: var(--space-6); }
+    }
+    .skills { list-style: none; padding: 0; margin: 0; display: grid; gap: var(--space-2); }
+    .role { padding: var(--space-4) 0; border-top: 1px solid var(--border); }
+    .role:first-of-type { border-top: 0; padding-top: 0; }
+    .role header { display: flex; justify-content: space-between; gap: var(--space-4); flex-wrap: wrap; }
+    .role h3 { margin: 0 0 var(--space-2); font-size: var(--type-lg); color: var(--fg); }
+    .role header span { color: var(--fg-muted); font-family: var(--font-mono); font-size: var(--type-sm); }
+    .role ul { margin: var(--space-2) 0; padding-left: var(--space-6); }
+    .tags { list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: var(--space-2); }
+    .tags li {
+      padding: 2px var(--space-2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-pill);
+      font-family: var(--font-mono); font-size: 0.75rem;
+      color: var(--fg-muted);
+    }
+    .project-grid {
+      display: grid; gap: var(--space-4);
+      grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+    }
+  </style>
+</PageLayout>
