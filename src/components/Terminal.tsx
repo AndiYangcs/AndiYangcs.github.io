@@ -21,6 +21,8 @@ function buildEndState(): string {
 }
 
 export function Terminal({ playIntro }: { playIntro: boolean }) {
+  // Initial '$ ' (not '') matches the post-replay assertion in tests: the prompt
+  // character is always visible, even before the typewriter starts.
   const [typed, setTyped] = useState<string>(playIntro ? '$ ' : buildEndState());
   const [done, setDone] = useState<boolean>(!playIntro);
   const [history, setHistory] = useState<
@@ -71,6 +73,10 @@ export function Terminal({ playIntro }: { playIntro: boolean }) {
       cancelled = true;
     };
   }, [playIntro, replayCounter]);
+
+  useEffect(() => {
+    if (done) inputRef.current?.focus();
+  }, [done]);
 
   const onSubmit = (e: FormEvent) => {
     e.preventDefault();
@@ -131,7 +137,7 @@ export function Terminal({ playIntro }: { playIntro: boolean }) {
           </ul>
 
           <form className="terminal__prompt" onSubmit={onSubmit}>
-            <label htmlFor="terminal-input" className="terminal__label">
+            <label htmlFor="terminal-input" className="terminal__label" aria-hidden="true">
               $
             </label>
             <input
