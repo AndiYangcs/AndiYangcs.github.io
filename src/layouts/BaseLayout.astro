@@ -1,0 +1,34 @@
+---
+import '../styles/global.css';
+interface Props {
+  title: string;
+  description?: string;
+}
+const { title, description = 'Andi Yang — personal site.' } = Astro.props;
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>{title}</title>
+    <script is:inline>
+      // Apply saved theme before first paint to avoid FOUC.
+      (function () {
+        try {
+          var saved = localStorage.getItem('theme');
+          var allowed = ['github', 'green', 'navy', 'amber', 'purple'];
+          var theme = allowed.indexOf(saved) >= 0 ? saved : 'github';
+          document.documentElement.setAttribute('data-theme', theme);
+        } catch (e) {
+          document.documentElement.setAttribute('data-theme', 'github');
+        }
+      })();
+    </script>
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>

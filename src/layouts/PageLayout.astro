@@ -1,0 +1,39 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import { ProToggle } from '../components/ProToggle';
+import { ThemeSwitcher } from '../components/ThemeSwitcher';
+
+interface Props {
+  title: string;
+  persona: 'professional' | 'real';
+  description?: string;
+}
+const { title, persona, description } = Astro.props;
+---
+<BaseLayout title={title} description={description}>
+  <div class="page-chrome">
+    <div class="page-chrome__theme">
+      <ThemeSwitcher client:load />
+    </div>
+    <ProToggle current={persona} client:load />
+  </div>
+  <main class="page-main">
+    <slot />
+  </main>
+
+  <style>
+    .page-chrome {
+      position: fixed; top: var(--space-4); left: var(--space-4); right: var(--space-4);
+      display: flex; justify-content: space-between; align-items: flex-start;
+      pointer-events: none;
+      z-index: 90;
+    }
+    .page-chrome > * { pointer-events: auto; }
+    .page-chrome__theme { /* sits at top-left */ }
+    .page-main {
+      max-width: var(--max-content-w);
+      margin: 0 auto;
+      padding: var(--space-16) var(--space-4) var(--space-12);
+    }
+  </style>
+</BaseLayout>
