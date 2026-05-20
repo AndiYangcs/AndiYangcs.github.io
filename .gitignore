@@ -1,0 +1,17 @@
+# Brainstorming session artifacts (mockups, server logs)
+.superpowers/
+
+# Node / build artifacts (added now so future Astro setup is clean)
+node_modules/
+dist/
+.astro/
+.env
+.env.*
+!.env.example
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.log
