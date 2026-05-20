@@ -1,38 +1,10 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { Terminal } from '../components/Terminal';
-
-// Decide on the server whether to *initially* render the end-state or animated.
-// True runtime decision (history.type + sessionStorage) is also handled
-// client-side inside the island via a re-mount; for first paint we default to
-// animating, and the island can fast-forward if the nav flag exists.
 ---
 <BaseLayout
   title="Andi Yang"
   description="Which Andi would you like to see? Terminal-style choice between Professional and Real."
 >
   <Terminal client:load playIntro={true} />
-  <script is:inline>
-    // If we're navigating internally (back from /professional or /real with
-    // the flag set), skip the intro by reloading the island with playIntro=false.
-    // Simpler approach: detect on the client and set a CSS class that the
-    // island reads. Implementation: the island already plays only when
-    // playIntro is true at first mount; for back/forward + flag the user
-    // requested an instant end-state. We rely on the island's behaviour:
-    // - direct/reload: playIntro=true (default)
-    // - back/forward: navType check below
-    var nav = performance.getEntriesByType('navigation')[0];
-    var type = nav && nav.type;
-    var hadFlag = sessionStorage.getItem('internal-nav') === '1';
-    if (hadFlag || type === 'back_forward') {
-      sessionStorage.removeItem('internal-nav');
-      document.documentElement.dataset.landingSkip = '1';
-    }
-  </script>
-  <style is:global>
-    html[data-landing-skip="1"] .terminal__screen { display: none; }
-    /* The island still renders; we just hide the animating region on
-       the very first frame. The island's internal state will catch up
-       and surface the choice buttons normally. */
-  </style>
 </BaseLayout>

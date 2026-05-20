@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type FormEvent } from 'react';
-import { markInternalNav } from '../lib/nav-flag';
+import { markInternalNav, shouldPlayLandingIntro, type NavType } from '../lib/nav-flag';
 import { handleTerminalInput } from '../lib/terminal-input';
 
 const INTRO_LINES = [
@@ -21,10 +21,25 @@ function buildEndState(): string {
 }
 
 export function Terminal({ playIntro }: { playIntro: boolean }) {
+  // Resolve whether to actually animate on first mount. The parent passes
+  // playIntro={true} for the landing page; we self-downgrade to false when
+  // the user arrived via back/forward or via the internal-nav flag (set by
+  // ProToggle / Terminal choice clicks). shouldPlayLandingIntro consumes
+  // the flag so subsequent renders see a clean slate.
+  const [animate] = useState<boolean>(() => {
+    if (!playIntro) return false;
+    if (typeof window === 'undefined') return true;
+    const nav = performance.getEntriesByType('navigation')[0] as
+      | (PerformanceNavigationTiming & { type: NavType })
+      | undefined;
+    const navType: NavType = nav?.type ?? 'navigate';
+    return shouldPlayLandingIntro({ navType });
+  });
+
   // Initial '$ ' (not '') matches the post-replay assertion in tests: the prompt
   // character is always visible, even before the typewriter starts.
-  const [typed, setTyped] = useState<string>(playIntro ? '$ ' : buildEndState());
-  const [done, setDone] = useState<boolean>(!playIntro);
+  const [typed, setTyped] = useState<string>(animate ? '$ ' : buildEndState());
+  const [done, setDone] = useState<boolean>(!animate);
   const [history, setHistory] = useState<
     Array<{ input: string; response: string }>
   >([]);
@@ -33,7 +48,7 @@ export function Terminal({ playIntro }: { playIntro: boolean }) {
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    if (!playIntro && replayCounter === 0) return;
+    if (!animate && replayCounter === 0) return;
 
     let cancelled = false;
     setTyped('$ ');
@@ -72,7 +87,7 @@ export function Terminal({ playIntro }: { playIntro: boolean }) {
     return () => {
       cancelled = true;
     };
-  }, [playIntro, replayCounter]);
+  }, [animate, replayCounter]);
 
   useEffect(() => {
     if (done) inputRef.current?.focus();
