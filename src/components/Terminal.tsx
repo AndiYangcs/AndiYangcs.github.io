@@ -4,12 +4,12 @@ import { handleTerminalInput } from '../lib/terminal-input';
 
 const INTRO_LINES = [
   '$ whoami',
-  '> Andi Yang',
-  '> Software Engineer',
-  '> Sydney, Australia 🇦🇺',
+  '> Name:     Andi Yang',
+  '> Title:    AI Engineer',
+  '> Location: Sydney, Australia 🇦🇺',
   '',
   '$ ls ./',
-  '> Two versions of me are available:',
+  '> Which Andi would you like to explore?',
   '',
 ];
 
