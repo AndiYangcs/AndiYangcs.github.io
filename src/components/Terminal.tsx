@@ -6,7 +6,7 @@ const INTRO_LINES = [
   '$ whoami',
   '> Name:     Andi Yang',
   '> Title:    AI Engineer',
-  '> Location: Sydney, Australia 🇦🇺',
+  '> Location: Sydney, Australia',
   '',
   '$ ls ./',
   '> Which Andi would you like to explore?',
@@ -124,10 +124,10 @@ export function Terminal({ playIntro }: { playIntro: boolean }) {
               onClick={onChoice}
               aria-label="Professional Andi"
             >
-              <span>┌─────────────────┐</span>
-              <span>│  Professional   │</span>
-              <span>│      Andi       │</span>
-              <span>└─────────────────┘</span>
+              <pre className="terminal__choice-art">{`┌─────────────────┐
+│  Professional   │
+│      Andi       │
+└─────────────────┘`}</pre>
             </a>
             <a
               className="terminal__choice"
@@ -135,10 +135,10 @@ export function Terminal({ playIntro }: { playIntro: boolean }) {
               onClick={onChoice}
               aria-label="Real Andi"
             >
-              <span>┌─────────────────┐</span>
-              <span>│      Real       │</span>
-              <span>│      Andi       │</span>
-              <span>└─────────────────┘</span>
+              <pre className="terminal__choice-art">{`┌─────────────────┐
+│      Real       │
+│      Andi       │
+└─────────────────┘`}</pre>
             </a>
           </div>
 
@@ -217,6 +217,12 @@ export function Terminal({ playIntro }: { playIntro: boolean }) {
           background: var(--accent-soft);
           transform: translateY(-2px);
           text-decoration: none;
+        }
+        .terminal__choice-art {
+          font-family: var(--font-mono);
+          margin: 0;
+          line-height: 1.1;
+          white-space: pre;
         }
         .terminal__history {
           list-style: none; padding: 0; margin: 0 0 var(--space-4);
