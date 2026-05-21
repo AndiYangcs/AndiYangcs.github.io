@@ -124,10 +124,10 @@ export function Terminal({ playIntro }: { playIntro: boolean }) {
               onClick={onChoice}
               aria-label="Professional Andi"
             >
-              <pre className="terminal__choice-art">{`┌─────────────────┐
-│  Professional   │
-│      Andi       │
-└─────────────────┘`}</pre>
+              <pre className="terminal__choice-art">{`───────────────────
+|  Professional   |
+|      Andi       |
+───────────────────`}</pre>
             </a>
             <a
               className="terminal__choice"
@@ -135,10 +135,10 @@ export function Terminal({ playIntro }: { playIntro: boolean }) {
               onClick={onChoice}
               aria-label="Real Andi"
             >
-              <pre className="terminal__choice-art">{`┌─────────────────┐
-│      Real       │
-│      Andi       │
-└─────────────────┘`}</pre>
+              <pre className="terminal__choice-art">{`───────────────────
+|      Real       |
+|      Andi       |
+───────────────────`}</pre>
             </a>
           </div>
 

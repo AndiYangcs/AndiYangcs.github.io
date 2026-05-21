@@ -4,55 +4,96 @@ import ResumeSidebar from '../components/ResumeSidebar.astro';
 import ResumeSection from '../components/ResumeSection.astro';
 import ProjectCard from '../components/ProjectCard.astro';
 ---
-<PageLayout title="Professional Andi" persona="professional">
+<PageLayout title="Professional Andi" persona="professional" wide>
   <div class="resume-grid">
     <ResumeSidebar />
 
     <div class="resume-content">
       <ResumeSection id="about" title="About">
         <p>
-          I'm an engineer who enjoys turning messy product problems into
-          systems that are pleasant to operate. Most recently I've been
-          working on developer platforms — internal tools, build pipelines,
-          and the unglamorous glue that makes engineering teams faster.
+          I'm currently a Graduate AI Engineer at Westpac, where I work on
+          applying large language models and agentic systems to problems
+          inside one of Australia's largest banks. My focus is the practical
+          end of AI: taking capabilities that work in isolation and turning
+          them into tools people can actually rely on. That means integrating
+          with existing systems, making them observable, and shaping them
+          around how the business genuinely operates.
+        </p>
+        <p>
+          I came into this role through a Bachelor of Computer Science and
+          Commerce, majoring in Computer Science and Financial Technology.
+          I've always been more interested in technology as a means than as
+          an end, in understanding the domain well enough to know which
+          problems are worth solving, and then having the engineering skills
+          to actually solve them. Finance offers no shortage of either.
+        </p>
+        <p>
+          What draws me to AI engineering right now is that the interesting
+          problems have moved. They aren't in the models themselves so much
+          as in everything around them: prompt and context design, evaluation,
+          retrieval, orchestration, guardrails, and the patient work of
+          understanding a process well enough to automate the right part of
+          it. I care about solutions that quietly reduce real overhead rather
+          than ones that look impressive in a demo.
+        </p>
+        <p>
+          Outside of work I keep a close eye on the broader AI ecosystem and
+          enjoy prototyping ideas to see what holds up beyond the hype. I
+          value clear thinking, honest measurement of what's working, and
+          building things that make the people around me more effective.
         </p>
       </ResumeSection>
 
       <ResumeSection id="skills" title="Skills">
         <ul class="skills">
-          <li><strong>Languages:</strong> TypeScript, Python, Go, SQL</li>
-          <li><strong>Frameworks:</strong> React, Astro, Node.js, FastAPI</li>
-          <li><strong>Cloud:</strong> AWS, GitHub Actions, Docker</li>
-          <li><strong>Practices:</strong> TDD, code review, observability, DX</li>
+          <li><strong>Languages:</strong> Python, Java, JavaScript, Ruby, C, SQL, HTML</li>
+          <li><strong>Frameworks:</strong> Ruby on Rails, .NET, React, Astro</li>
+          <li><strong>Tools:</strong> Git, MongoDB, RStudio, Postman</li>
+          <li><strong>Practices:</strong> MVC, OOP, unit + integration testing, agile</li>
         </ul>
       </ResumeSection>
 
       <ResumeSection id="experience" title="Experience">
         <article class="role">
           <header>
-            <h3>Software Engineer · Westpac</h3>
-            <span>2023 — Present</span>
+            <h3>AI Engineer · Westpac</h3>
+            <span>Feb 2026 — Present</span>
           </header>
           <ul>
-            <li>Built internal tooling that reduced deploy time for a critical service.</li>
-            <li>Owned the developer experience for a multi-team platform.</li>
+            <li>Building AI-powered automation to streamline internal workflows.</li>
+            <li>Integrating LLM capabilities into existing enterprise processes.</li>
           </ul>
           <ul class="tags">
-            <li>TypeScript</li><li>AWS</li><li>GitHub Actions</li>
+            <li>LLMs</li><li>Automation</li><li>Enterprise AI</li>
           </ul>
         </article>
 
         <article class="role">
           <header>
-            <h3>Previous Role · Earlier Company</h3>
-            <span>2021 — 2023</span>
+            <h3>Software Developer · Intuition Education</h3>
+            <span>Jan 2025 — Sep 2025</span>
           </header>
           <ul>
-            <li>Shipped customer-facing features in a React + Node stack.</li>
-            <li>Mentored junior engineers through code review and pairing.</li>
+            <li>Built an AI chatbot platform for high-school students on Ruby on Rails (MVC).</li>
+            <li>Owned the front-end interface, prioritising accessibility and usability.</li>
+            <li>Reduced per-query cost ~99% by replacing manual tutor responses with API calls.</li>
           </ul>
           <ul class="tags">
-            <li>React</li><li>Node.js</li><li>PostgreSQL</li>
+            <li>Ruby on Rails</li><li>AI/LLM APIs</li><li>Git</li>
+          </ul>
+        </article>
+
+        <article class="role">
+          <header>
+            <h3>Senior Tutor &amp; Teaching Coordinator · Intuition Education</h3>
+            <span>Feb 2020 — Present</span>
+          </header>
+          <ul>
+            <li>Junior manager overseeing daily operations for tutors and students.</li>
+            <li>Designed and ran training programs for new tutors.</li>
+          </ul>
+          <ul class="tags">
+            <li>Leadership</li><li>Training</li><li>Operations</li>
           </ul>
         </article>
       </ResumeSection>
@@ -60,15 +101,39 @@ import ProjectCard from '../components/ProjectCard.astro';
       <ResumeSection id="education" title="Education">
         <article class="role">
           <header>
-            <h3>BSc Computer Science · University</h3>
-            <span>2017 — 2020</span>
+            <h3>Bachelor of Commerce &amp; Computer Science · UNSW</h3>
+            <span>2020 — 2024</span>
           </header>
-          <p>Coursework: algorithms, distributed systems, compilers.</p>
+          <p>Majors: Computer Science (General) and Financial Technology.</p>
         </article>
       </ResumeSection>
 
       <ResumeSection id="projects" title="Projects">
         <div class="project-grid">
+          <ProjectCard
+            title="AI Chatbot Platform"
+            href="https://ai.intu.com.au"
+            tags={["Ruby on Rails","LLM APIs","MVC"]}
+          >
+            Web interface for an AI tutor aimed at high-school students. Cut
+            per-query cost ~99% by moving from human tutors to API calls.
+          </ProjectCard>
+          <ProjectCard
+            title="Dungeon Mania (Backend)"
+            href="#"
+            tags={["Java","OOP","Testing"]}
+          >
+            Java backend for a puzzle game with user-generated content.
+            OOP design, agile delivery, full unit + integration test coverage.
+          </ProjectCard>
+          <ProjectCard
+            title="Customer Satisfaction Analytics"
+            href="#"
+            tags={["R","Statistics","Data Viz"]}
+          >
+            Led a data project using decision trees and regression to
+            identify drivers of customer satisfaction, built in R.
+          </ProjectCard>
           <ProjectCard
             title="AndiYangcs.github.io"
             href="https://github.com/AndiYangcs/AndiYangcs.github.io"
@@ -76,20 +141,13 @@ import ProjectCard from '../components/ProjectCard.astro';
           >
             This site. Astro + React islands, deployed to GitHub Pages.
           </ProjectCard>
-          <ProjectCard
-            title="Sample Project"
-            href="#"
-            tags={["TypeScript","Node.js"]}
-          >
-            Placeholder card — will be replaced with real projects.
-          </ProjectCard>
         </div>
       </ResumeSection>
 
       <ResumeSection id="contact" title="Contact">
         <p>
           Easiest way to reach me is via
-          <a href="mailto:hello@example.com">email</a> or
+          <a href="mailto:andiyang.cs@gmail.com">email</a> or
           <a href="https://www.linkedin.com/" rel="noopener">LinkedIn</a>.
         </p>
       </ResumeSection>
@@ -99,11 +157,16 @@ import ProjectCard from '../components/ProjectCard.astro';
   <style>
     .resume-grid {
       display: grid;
-      grid-template-columns: var(--sidebar-w) minmax(0, 1fr);
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
       gap: var(--space-12);
     }
-    @media (max-width: 900px) {
+    .resume-content {
+      padding-top: 0;
+      grid-column: 2;
+    }
+    @media (max-width: 1024px) {
       .resume-grid { grid-template-columns: 1fr; gap: var(--space-6); }
+      .resume-content { padding-top: 0; grid-column: auto; }
     }
     .skills { list-style: none; padding: 0; margin: 0; display: grid; gap: var(--space-2); }
     .role { padding: var(--space-4) 0; border-top: 1px solid var(--border); }

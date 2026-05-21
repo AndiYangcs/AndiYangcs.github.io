@@ -1,39 +1,33 @@
 ---
 import BaseLayout from './BaseLayout.astro';
-import { ProToggle } from '../components/ProToggle';
-import { ThemeSwitcher } from '../components/ThemeSwitcher';
+import { TopNav } from '../components/TopNav';
 
 interface Props {
   title: string;
   persona: 'professional' | 'real';
   description?: string;
+  wide?: boolean;
 }
-const { title, persona, description } = Astro.props;
+const { title, persona, description, wide = false } = Astro.props;
 ---
 <BaseLayout title={title} description={description}>
-  <div class="page-chrome">
-    <div class="page-chrome__theme">
-      <ThemeSwitcher client:load />
-    </div>
-    <ProToggle current={persona} client:load />
-  </div>
-  <main class="page-main">
+  <TopNav persona={persona} client:load />
+  <main class={'page-main' + (wide ? ' page-main--wide' : '')}>
     <slot />
   </main>
 
   <style>
-    .page-chrome {
-      position: fixed; top: var(--space-4); left: var(--space-4); right: var(--space-4);
-      display: flex; justify-content: space-between; align-items: flex-start;
-      pointer-events: none;
-      z-index: 90;
-    }
-    .page-chrome > * { pointer-events: auto; }
-    .page-chrome__theme { /* sits at top-left */ }
     .page-main {
       max-width: var(--max-content-w);
       margin: 0 auto;
       padding: var(--space-16) var(--space-4) var(--space-12);
+    }
+    .page-main--wide {
+      max-width: 80rem;
+      padding: var(--space-16) var(--space-12) var(--space-12);
+    }
+    @media (max-width: 1024px) {
+      .page-main--wide { padding: var(--space-16) var(--space-4) var(--space-12); }
     }
   </style>
 </BaseLayout>

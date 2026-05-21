@@ -1,5 +1,6 @@
 ---
 import '../styles/global.css';
+import { CursorGlow } from '../components/CursorGlow';
 interface Props {
   title: string;
   description?: string;
@@ -29,6 +30,7 @@ const { title, description = 'Andi Yang — personal site.' } = Astro.props;
     </script>
   </head>
   <body>
+    <CursorGlow client:load />
     <slot />
   </body>
 </html>

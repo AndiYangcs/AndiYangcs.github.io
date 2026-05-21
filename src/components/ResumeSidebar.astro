@@ -11,9 +11,11 @@ const sections = [
 <aside class="resume-sidebar">
   <div>
     <h1>Andi Yang</h1>
-    <p class="resume-sidebar__role">Software Engineer</p>
+    <p class="resume-sidebar__role">AI Engineer</p>
     <p class="resume-sidebar__bio">
-      Building reliable web platforms and developer tooling in Sydney.
+      Engineering practical AI solutions that automate routine work and
+      bridging LLM capabilities with real business processes to reduce
+      overhead, free up time, and let teams focus on higher-value problems.
     </p>
   </div>
 
@@ -33,7 +35,7 @@ const sections = [
   <ul class="resume-sidebar__socials" aria-label="Social links">
     <li><a href="https://github.com/AndiYangcs" rel="noopener">GitHub</a></li>
     <li><a href="https://www.linkedin.com/" rel="noopener">LinkedIn</a></li>
-    <li><a href="mailto:hello@example.com">Email</a></li>
+    <li><a href="mailto:andiyang.cs@gmail.com">Email</a></li>
   </ul>
 </aside>
 
@@ -61,10 +63,15 @@ const sections = [
 
 <style>
   .resume-sidebar {
-    position: sticky; top: var(--space-12);
-    display: flex; flex-direction: column; gap: var(--space-8);
-    min-height: calc(100vh - var(--space-16));
-    padding-right: var(--space-6);
+    position: fixed;
+    top: 3.5rem;
+    height: calc(100vh - 3.5rem);
+    /* Match the left edge + width of the grid's first column inside .page-main--wide (max 80rem, padding 3rem each side, gap 3rem) */
+    left: calc(max(0px, (100vw - 80rem) / 2) + 3rem);
+    width: calc((min(100vw, 80rem) - 9rem) / 2 * 0.8);
+    display: flex; flex-direction: column; justify-content: space-between;
+    padding: var(--space-4) 0 var(--space-6);
+    overflow: hidden;
   }
   .resume-sidebar h1 {
     margin: 0 0 var(--space-2);
@@ -74,7 +81,7 @@ const sections = [
   .resume-sidebar__role {
     margin: 0; color: var(--accent); font-family: var(--font-mono);
   }
-  .resume-sidebar__bio { color: var(--fg-muted); margin-top: var(--space-4); }
+  .resume-sidebar__bio { color: var(--fg-muted); font-family: var(--font-sans); margin-top: var(--space-4); }
   .resume-sidebar__nav ul {
     list-style: none; padding: 0; margin: 0;
     display: flex; flex-direction: column; gap: var(--space-3);
@@ -94,11 +101,17 @@ const sections = [
     width: 3rem; background: var(--accent);
   }
   .resume-sidebar__socials {
-    list-style: none; padding: 0; margin: 0;
+    list-style: none; padding: 0; margin: auto 0 0;
     display: flex; gap: var(--space-4);
     font-family: var(--font-mono); font-size: var(--type-sm);
   }
-  @media (max-width: 900px) {
-    .resume-sidebar { position: static; min-height: 0; padding-right: 0; }
+  @media (max-width: 1024px) {
+    .resume-sidebar {
+      position: static;
+      height: auto;
+      width: auto;
+      left: auto;
+      padding: 0;
+    }
   }
 </style>

@@ -59,7 +59,13 @@ export function ThemeSwitcher() {
                 }}
                 className="theme-switcher__item"
               >
-                <span aria-hidden="true">{t.id === theme ? '●' : '○'}</span>{' '}
+                <span
+                  aria-hidden="true"
+                  className={
+                    'theme-switcher__dot' +
+                    (t.id === theme ? ' theme-switcher__dot--on' : '')
+                  }
+                />{' '}
                 {t.label}
               </button>
             </li>
@@ -78,7 +84,7 @@ export function ThemeSwitcher() {
           font-size: var(--type-sm);
         }
         .theme-switcher__menu {
-          position: absolute; right: 0; top: calc(100% + var(--space-2));
+          position: absolute; left: 0; top: calc(100% + var(--space-2));
           list-style: none; margin: 0; padding: var(--space-2);
           background: var(--bg-elev);
           border: 1px solid var(--border);
@@ -94,6 +100,18 @@ export function ThemeSwitcher() {
           font-size: var(--type-sm);
         }
         .theme-switcher__item:hover { background: var(--accent-soft); }
+        .theme-switcher__dot {
+          display: inline-block;
+          width: 0.7em;
+          height: 0.7em;
+          border-radius: 50%;
+          border: 1.5px solid currentColor;
+          background: transparent;
+          flex-shrink: 0;
+        }
+        .theme-switcher__dot--on {
+          background: currentColor;
+        }
       `}</style>
     </div>
   );
