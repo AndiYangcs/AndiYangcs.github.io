@@ -39,13 +39,37 @@ describe('Terminal', () => {
     ).toBeInTheDocument();
   });
 
-  it('answers any input with the canned response', async () => {
-    vi.useRealTimers(); // userEvent needs real timers
+  it('responds to a known command (whoami) with profile data', async () => {
+    vi.useRealTimers();
     const user = userEvent.setup();
     render(<Terminal playIntro={false} />);
     const input = screen.getByRole('textbox', { name: /prompt/i });
-    await user.type(input, 'hi there{Enter}');
-    expect(screen.getByText(/wow! that sounds amazing/i)).toBeInTheDocument();
+    await user.type(input, 'whoami{Enter}');
+    // whoami prints multiple lines; at least one contains "Andi Yang".
+    // (The intro already shows it too, so use getAllByText.)
+    expect(screen.getAllByText(/Andi Yang/i).length).toBeGreaterThan(0);
+  });
+
+  it('shows an error for unknown commands', async () => {
+    vi.useRealTimers();
+    const user = userEvent.setup();
+    render(<Terminal playIntro={false} />);
+    const input = screen.getByRole('textbox', { name: /prompt/i });
+    await user.type(input, 'foobar{Enter}');
+    expect(screen.getByText(/command not found: foobar/i)).toBeInTheDocument();
+  });
+
+  it('clear command wipes history and replays intro', async () => {
+    vi.useRealTimers();
+    const user = userEvent.setup();
+    render(<Terminal playIntro={false} />);
+    const input = screen.getByRole('textbox', { name: /prompt/i });
+    // Add a history entry first.
+    await user.type(input, 'whoami{Enter}');
+    // Then clear it.
+    await user.type(input, 'clear{Enter}');
+    // Typed-region resets to just the prompt while intro replays.
+    expect(screen.getByTestId('typed-region').textContent).toBe('$ ');
   });
 
   it('replay button restarts animation', async () => {

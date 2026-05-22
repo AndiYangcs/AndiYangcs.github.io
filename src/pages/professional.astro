@@ -3,6 +3,7 @@ import PageLayout from '../layouts/PageLayout.astro';
 import ResumeSidebar from '../components/ResumeSidebar.astro';
 import ResumeSection from '../components/ResumeSection.astro';
 import ProjectCard from '../components/ProjectCard.astro';
+import { PROFILE } from '../lib/profile';
 ---
 <PageLayout title="Professional Andi" persona="professional" wide>
   <div class="resume-grid">
@@ -10,145 +11,61 @@ import ProjectCard from '../components/ProjectCard.astro';
 
     <div class="resume-content">
       <ResumeSection id="about" title="About">
-        <p>
-          I'm currently a Graduate AI Engineer at Westpac, where I work on
-          applying large language models and agentic systems to problems
-          inside one of Australia's largest banks. My focus is the practical
-          end of AI: taking capabilities that work in isolation and turning
-          them into tools people can actually rely on. That means integrating
-          with existing systems, making them observable, and shaping them
-          around how the business genuinely operates.
-        </p>
-        <p>
-          I came into this role through a Bachelor of Computer Science and
-          Commerce, majoring in Computer Science and Financial Technology.
-          I've always been more interested in technology as a means than as
-          an end, in understanding the domain well enough to know which
-          problems are worth solving, and then having the engineering skills
-          to actually solve them. Finance offers no shortage of either.
-        </p>
-        <p>
-          What draws me to AI engineering right now is that the interesting
-          problems have moved. They aren't in the models themselves so much
-          as in everything around them: prompt and context design, evaluation,
-          retrieval, orchestration, guardrails, and the patient work of
-          understanding a process well enough to automate the right part of
-          it. I care about solutions that quietly reduce real overhead rather
-          than ones that look impressive in a demo.
-        </p>
-        <p>
-          Outside of work I keep a close eye on the broader AI ecosystem and
-          enjoy prototyping ideas to see what holds up beyond the hype. I
-          value clear thinking, honest measurement of what's working, and
-          building things that make the people around me more effective.
-        </p>
+        {PROFILE.about.map((para) => <p>{para}</p>)}
       </ResumeSection>
 
       <ResumeSection id="skills" title="Skills">
         <ul class="skills">
-          <li><strong>Languages:</strong> Python, Java, JavaScript, Ruby, C, SQL, HTML</li>
-          <li><strong>Frameworks:</strong> Ruby on Rails, .NET, React, Astro</li>
-          <li><strong>Tools:</strong> Git, MongoDB, RStudio, Postman</li>
-          <li><strong>Practices:</strong> MVC, OOP, unit + integration testing, agile</li>
+          {PROFILE.skills.map((group) => (
+            <li><strong>{group.category}:</strong> {group.items.join(', ')}</li>
+          ))}
         </ul>
       </ResumeSection>
 
       <ResumeSection id="experience" title="Experience">
-        <article class="role">
-          <header>
-            <h3>AI Engineer · Westpac</h3>
-            <span>Feb 2026 — Present</span>
-          </header>
-          <ul>
-            <li>Building AI-powered automation to streamline internal workflows.</li>
-            <li>Integrating LLM capabilities into existing enterprise processes.</li>
-          </ul>
-          <ul class="tags">
-            <li>LLMs</li><li>Automation</li><li>Enterprise AI</li>
-          </ul>
-        </article>
-
-        <article class="role">
-          <header>
-            <h3>Software Developer · Intuition Education</h3>
-            <span>Jan 2025 — Sep 2025</span>
-          </header>
-          <ul>
-            <li>Built an AI chatbot platform for high-school students on Ruby on Rails (MVC).</li>
-            <li>Owned the front-end interface, prioritising accessibility and usability.</li>
-            <li>Reduced per-query cost ~99% by replacing manual tutor responses with API calls.</li>
-          </ul>
-          <ul class="tags">
-            <li>Ruby on Rails</li><li>AI/LLM APIs</li><li>Git</li>
-          </ul>
-        </article>
-
-        <article class="role">
-          <header>
-            <h3>Senior Tutor &amp; Teaching Coordinator · Intuition Education</h3>
-            <span>Feb 2020 — Present</span>
-          </header>
-          <ul>
-            <li>Junior manager overseeing daily operations for tutors and students.</li>
-            <li>Designed and ran training programs for new tutors.</li>
-          </ul>
-          <ul class="tags">
-            <li>Leadership</li><li>Training</li><li>Operations</li>
-          </ul>
-        </article>
+        {PROFILE.experience.map((role) => (
+          <article class="role">
+            <header>
+              <h3>{role.role} · {role.company}</h3>
+              <span>{role.period}</span>
+            </header>
+            <ul>
+              {role.bullets.map((b) => <li>{b}</li>)}
+            </ul>
+            <ul class="tags">
+              {role.tags.map((t) => <li>{t}</li>)}
+            </ul>
+          </article>
+        ))}
       </ResumeSection>
 
       <ResumeSection id="education" title="Education">
-        <article class="role">
-          <header>
-            <h3>Bachelor of Commerce &amp; Computer Science · UNSW</h3>
-            <span>2020 — 2024</span>
-          </header>
-          <p>Majors: Computer Science (General) and Financial Technology.</p>
-        </article>
+        {PROFILE.education.map((edu) => (
+          <article class="role">
+            <header>
+              <h3>{edu.degree} · {edu.institution}</h3>
+              <span>{edu.period}</span>
+            </header>
+            {edu.detail && <p>{edu.detail}</p>}
+          </article>
+        ))}
       </ResumeSection>
 
       <ResumeSection id="projects" title="Projects">
         <div class="project-grid">
-          <ProjectCard
-            title="AI Chatbot Platform"
-            href="https://ai.intu.com.au"
-            tags={["Ruby on Rails","LLM APIs","MVC"]}
-          >
-            Web interface for an AI tutor aimed at high-school students. Cut
-            per-query cost ~99% by moving from human tutors to API calls.
-          </ProjectCard>
-          <ProjectCard
-            title="Dungeon Mania (Backend)"
-            href="#"
-            tags={["Java","OOP","Testing"]}
-          >
-            Java backend for a puzzle game with user-generated content.
-            OOP design, agile delivery, full unit + integration test coverage.
-          </ProjectCard>
-          <ProjectCard
-            title="Customer Satisfaction Analytics"
-            href="#"
-            tags={["R","Statistics","Data Viz"]}
-          >
-            Led a data project using decision trees and regression to
-            identify drivers of customer satisfaction, built in R.
-          </ProjectCard>
-          <ProjectCard
-            title="AndiYangcs.github.io"
-            href="https://github.com/AndiYangcs/AndiYangcs.github.io"
-            tags={["Astro","React","TypeScript"]}
-          >
-            This site. Astro + React islands, deployed to GitHub Pages.
-          </ProjectCard>
+          {PROFILE.projects.map((p) => (
+            <ProjectCard title={p.title} href={p.href} tags={p.tags}>
+              {p.description}
+            </ProjectCard>
+          ))}
         </div>
       </ResumeSection>
 
       <ResumeSection id="contact" title="Contact">
         <p>
           Easiest way to reach me is via
-          <a href="mailto:andiyang.cs@gmail.com">email</a> or
-          <a href="https://www.linkedin.com/" rel="noopener">LinkedIn</a>.
+          <a href={`mailto:${PROFILE.socials.email}`}>email</a> or
+          <a href={PROFILE.socials.linkedin} rel="noopener">LinkedIn</a>.
         </p>
       </ResumeSection>
     </div>

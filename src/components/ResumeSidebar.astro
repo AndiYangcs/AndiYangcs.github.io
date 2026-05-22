@@ -1,4 +1,6 @@
 ---
+import { PROFILE } from '../lib/profile';
+
 const sections = [
   { id: 'about', label: 'About' },
   { id: 'skills', label: 'Skills' },
@@ -10,13 +12,9 @@ const sections = [
 ---
 <aside class="resume-sidebar">
   <div>
-    <h1>Andi Yang</h1>
-    <p class="resume-sidebar__role">AI Engineer</p>
-    <p class="resume-sidebar__bio">
-      Engineering practical AI solutions that automate routine work and
-      bridging LLM capabilities with real business processes to reduce
-      overhead, free up time, and let teams focus on higher-value problems.
-    </p>
+    <h1>{PROFILE.name}</h1>
+    <p class="resume-sidebar__role">{PROFILE.title}</p>
+    <p class="resume-sidebar__bio">{PROFILE.tagline}</p>
   </div>
 
   <nav aria-label="Section navigation" class="resume-sidebar__nav">
@@ -33,9 +31,9 @@ const sections = [
   </nav>
 
   <ul class="resume-sidebar__socials" aria-label="Social links">
-    <li><a href="https://github.com/AndiYangcs" rel="noopener">GitHub</a></li>
-    <li><a href="https://www.linkedin.com/" rel="noopener">LinkedIn</a></li>
-    <li><a href="mailto:andiyang.cs@gmail.com">Email</a></li>
+    <li><a href={PROFILE.socials.github} rel="noopener">GitHub</a></li>
+    <li><a href={PROFILE.socials.linkedin} rel="noopener">LinkedIn</a></li>
+    <li><a href={`mailto:${PROFILE.socials.email}`}>Email</a></li>
   </ul>
 </aside>
 
