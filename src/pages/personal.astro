@@ -1,0 +1,187 @@
+﻿---
+import PageLayout from '../layouts/PageLayout.astro';
+import '../styles/hobby-fonts.css';
+---
+<PageLayout title="Personal Andi" persona="personal">
+  <header class="personal-hero">
+    <h1>Personal Andi</h1>
+    <p>Stuff I do when I'm not at a terminal.</p>
+  </header>
+
+  <section class="personal-section">
+    <h2>About me beyond work</h2>
+    <p>
+      Born in Shenzhen, grew up in Sydney. I dislike coffee but feel
+      peer-pressured to drink it with everyone else anyway. Was a hardcore
+      gamer and anime enthusiast in a previous life; now I dip back in when
+      something good drops. Most evenings end with me horizontal in bed,
+      doomscrolling Douyin.
+    </p>
+  </section>
+
+  <section class="personal-section">
+    <h2>Hobbies &amp; interests</h2>
+    <ul class="card-grid">
+      <li>
+        <h3 class="card-title card-title--travel hobby-font--travel">✈️ Travelling</h3>
+        <p>
+          Eleven countries in and the number keeps climbing. Two things
+          always make the itinerary on any trip: food and museums. Norway
+          is currently my favourite.
+        </p>
+        <a class="card-more" href="/travel">Find out more →</a>
+      </li>
+      <li>
+        <h3 class="card-title card-title--gaming hobby-font--gaming">🎮 Gaming</h3>
+        <p>
+          The leaderboard of hours wasted is led, without a doubt, by
+          League of Legends and Escape From Tarkov. Outside those two,
+          anything survival flavoured will hook me.
+        </p>
+        <a class="card-more" href="/gaming">Find out more →</a>
+      </li>
+      <li>
+        <h3 class="card-title card-title--anime hobby-font--anime">🍥 Anime</h3>
+        <p>
+          Fantasy and comedy is the sweet spot. One Piece is still on the
+          "maybe one day" pile since 1000+ episodes is just too scary.
+          Also have a full playlist of OPs and EDs, no shame.
+        </p>
+        <a class="card-more" href="/anime">Find out more →</a>
+      </li>
+      <li>
+        <h3 class="card-title card-title--sports hobby-font--sports">🏸 Sports</h3>
+        <p>
+          Not particularly coordinated, anything that involves hitting a
+          ball with my body parts is a disaster. Badminton is the exception
+          (the racket helps), and I play in a weekly session with friends.
+        </p>
+        <a class="card-more" href="/sports">Find out more →</a>
+      </li>
+    </ul>
+  </section>
+
+  <section class="personal-section">
+    <h2>Photo gallery</h2>
+    <div class="gallery">
+      <div class="gallery__tile" aria-label="Placeholder photo 1"></div>
+      <div class="gallery__tile" aria-label="Placeholder photo 2"></div>
+      <div class="gallery__tile" aria-label="Placeholder photo 3"></div>
+      <div class="gallery__tile" aria-label="Placeholder photo 4"></div>
+      <div class="gallery__tile" aria-label="Placeholder photo 5"></div>
+      <div class="gallery__tile" aria-label="Placeholder photo 6"></div>
+    </div>
+  </section>
+
+  <section class="personal-section">
+    <h2>Fun facts</h2>
+    <ul>
+      <li>The last physical book I finished completely was my Year 12 Cambridge Ext 2 Maths textbook.</li>
+      <li>I've tried every sub on the Subway menu.</li>
+    </ul>
+  </section>
+
+  <section class="personal-section">
+    <h2>Favorites</h2>
+    <div class="favorites">
+      <div>
+        <h3>Films</h3>
+        <ul><li>Avengers: Endgame</li><li>Your Name</li></ul>
+      </div>
+      <div>
+        <h3>TV shows</h3>
+        <ul><li>Arcane</li><li>The Boys</li></ul>
+      </div>
+      <div>
+        <h3>Books</h3>
+        <ul><li>Harry Potter series</li><li>Murder on the Orient Express</li></ul>
+      </div>
+      <div>
+        <h3>Games</h3>
+        <ul><li>Escape From Tarkov</li><li>League of Legends</li></ul>
+      </div>
+      <div>
+        <h3>Food</h3>
+        <ul><li>Subway</li><li>Soft serve</li></ul>
+      </div>
+      <div>
+        <h3>Anime</h3>
+        <ul><li>Frieren</li><li>Mushoku Tensei</li><li>Konosuba</li></ul>
+      </div>
+    </div>
+  </section>
+
+  <style>
+    .personal-hero { padding: var(--space-8) 0 var(--space-6); }
+    .personal-hero h1 { font-size: var(--type-3xl); margin: 0 0 var(--space-2); color: var(--accent); font-family: var(--font-mono); }
+    .personal-hero p { color: var(--fg-muted); margin: 0; }
+    .personal-section { padding: var(--space-8) 0; border-top: 1px solid var(--border); }
+    .personal-section h2 {
+      font-family: var(--font-mono); font-size: var(--type-sm);
+      text-transform: uppercase; letter-spacing: 0.12em;
+      color: var(--accent); margin: 0 0 var(--space-4);
+    }
+    .card-grid {
+      list-style: none; padding: 0; margin: 0;
+      display: grid; gap: var(--space-4);
+      grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+    }
+    .card-grid li {
+      padding: var(--space-4);
+      background: var(--bg-elev);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      display: flex; flex-direction: column; gap: var(--space-3);
+    }
+    .card-title {
+      margin: 0;
+      color: var(--fg);
+      font-size: 1.5rem;
+      line-height: 1.1;
+    }
+    /* Per-card font-size tweaks (font-family lives in /styles/hobby-fonts.css). */
+    .card-title--gaming { font-size: 1.8rem; }
+    .card-title--sports { font-size: 1.7rem; }
+    .card-grid p {
+      margin: 0;
+      color: var(--fg-muted);
+      font-size: var(--type-sm);
+      line-height: 1.55;
+    }
+    .card-more {
+      margin-top: auto;
+      align-self: flex-end;
+      padding: 4px 8px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-pill);
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: var(--fg-muted);
+      text-decoration: none;
+      transition: color 200ms ease, border-color 200ms ease, background 200ms ease;
+    }
+    .card-more:hover {
+      color: var(--accent);
+      border-color: var(--accent);
+      background: var(--accent-soft);
+    }
+    .gallery {
+      display: grid; gap: var(--space-3);
+      grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+    }
+    .gallery__tile {
+      aspect-ratio: 1 / 1;
+      background:
+        linear-gradient(135deg, var(--accent-soft) 0%, transparent 70%),
+        var(--bg-elev);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+    }
+    .favorites {
+      display: grid; gap: var(--space-6);
+      grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+    }
+    .favorites h3 { margin: 0 0 var(--space-2); font-size: var(--type-base); color: var(--fg); }
+    .favorites ul { margin: 0; padding-left: var(--space-6); color: var(--fg-muted); }
+  </style>
+</PageLayout>

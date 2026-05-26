@@ -33,6 +33,14 @@ export interface Project {
   description: string;
 }
 
+export interface Certification {
+  name: string;
+  code?: string;
+  issuer: string;
+  issued: string;
+  credentialUrl?: string;
+}
+
 export interface Socials {
   email: string;
   github: string;
@@ -48,6 +56,7 @@ export interface Profile {
   skills: SkillGroup[];
   experience: Role[];
   education: Education[];
+  certifications: Certification[];
   projects: Project[];
   socials: Socials;
 }
@@ -58,9 +67,8 @@ export const PROFILE: Profile = {
   location: 'Sydney, Australia',
 
   tagline:
-    'Engineering practical AI solutions that automate routine work and ' +
-    'bridging LLM capabilities with real business processes to reduce ' +
-    'overhead, free up time, and let teams focus on higher-value problems.',
+    'Building practical AI agents and tools that quietly take real work ' +
+    "off people's plates.",
 
   about: [
     "I'm currently a Graduate AI Engineer at Westpac, where I work on " +
@@ -75,25 +83,74 @@ export const PROFILE: Profile = {
       "I've always been more interested in technology as a means than as " +
       'an end, in understanding the domain well enough to know which ' +
       'problems are worth solving, and then having the engineering skills ' +
-      'to actually solve them. Finance offers no shortage of either.',
+      'to actually solve them.',
     'What draws me to AI engineering right now is that the interesting ' +
       "problems have moved. They aren't in the models themselves so much " +
-      'as in everything around them: prompt and context design, evaluation, ' +
-      'retrieval, orchestration, guardrails, and the patient work of ' +
-      'understanding a process well enough to automate the right part of ' +
-      'it. I care about solutions that quietly reduce real overhead rather ' +
-      'than ones that look impressive in a demo.',
-    'Outside of work I keep a close eye on the broader AI ecosystem and ' +
-      'enjoy prototyping ideas to see what holds up beyond the hype. I ' +
-      "value clear thinking, honest measurement of what's working, and " +
-      'building things that make the people around me more effective.',
+      'as in everything around them, and they\'re shifting again from ' +
+      'chatbots you ask questions to toward agents that act on your ' +
+      'behalf inside the systems people already use. That makes the real ' +
+      'work organisational and architectural: prompt and context design, ' +
+      'evaluation, retrieval, tool-use and orchestration, guardrails, and ' +
+      'the patient work of understanding a process well enough to delegate ' +
+      'the right part of it. I care about solutions that quietly reduce ' +
+      'real overhead rather than ones that look impressive in a demo.',
   ],
 
   skills: [
-    { category: 'Languages', items: ['Python', 'Java', 'JavaScript', 'Ruby', 'C', 'SQL', 'HTML'] },
-    { category: 'Frameworks', items: ['Ruby on Rails', '.NET', 'React', 'Astro'] },
-    { category: 'Tools', items: ['Git', 'MongoDB', 'RStudio', 'Postman'] },
-    { category: 'Practices', items: ['MVC', 'OOP', 'unit + integration testing', 'agile'] },
+    { category: 'Languages', items: ['Python', 'TypeScript', 'C', 'Java', 'JavaScript', 'SQL', 'Rust', 'R'] },
+    {
+      category: 'AI / LLMs',
+      items: [
+        'Claude Code/CLI',
+        'Amp Code',
+        'Cursor',
+        'GitHub Copilot',
+        'Codex',
+        'Azure OpenAI',
+        'MCP',
+        'LangGraph',
+      ],
+    },
+    {
+      category: 'Stack & Tools',
+      items: [
+        'GitHub',
+        'Next.js',
+        'Node.js',
+        'React',
+        'Astro',
+        'Vue',
+        'Tailwind CSS',
+        'Bootstrap',
+        'Ruby on Rails',
+        'FastAPI',
+        'PostgreSQL',
+        'Supabase',
+        'Microsoft Azure',
+        'Vercel',
+        'Postman',
+        'Docker',
+        'Sentry',
+        'Jira',
+        'Confluence',
+        'Bitbucket',
+        'GitHub Actions',
+      ],
+    },
+    {
+      category: 'Practices',
+      items: [
+        'RAG',
+        'LLM evaluation',
+        'prompt & context engineering',
+        'AI-assisted development',
+        'agent design & orchestration',
+        'guardrails & safety',
+        'TDD',
+        'agile',
+        'cross-functional collaboration',
+      ],
+    },
   ],
 
   experience: [
@@ -112,21 +169,23 @@ export const PROFILE: Profile = {
       company: 'Intuition Education',
       period: 'Jan 2025 — Sep 2025',
       bullets: [
-        'Built an AI chatbot platform for high-school students on Ruby on Rails (MVC).',
-        'Owned the front-end interface, prioritising accessibility and usability.',
+        'Collaborated with the team to plan, build, and test an AI chatbot platform for high-school students on Ruby on Rails.',
+        'Owned the front-end interface, prioritising accessibility and usability for a student audience.',
+        'Worked across the MVC stack, connecting front-end components to backend logic through a Git-based feature-branch workflow.',
         'Reduced per-query cost ~99% by replacing manual tutor responses with API calls.',
       ],
-      tags: ['Ruby on Rails', 'AI/LLM APIs', 'Git'],
+      tags: ['Ruby on Rails', 'MVC', 'AI/LLM APIs', 'Git'],
     },
     {
-      role: 'Senior Tutor & Teaching Coordinator',
+      role: 'Senior Teacher & TnL Coordinator',
       company: 'Intuition Education',
       period: 'Feb 2020 — Present',
       bullets: [
-        'Junior manager overseeing daily operations for tutors and students.',
-        'Designed and ran training programs for new tutors.',
+        'Oversaw daily operations as a junior manager for teachers and tutors, keeping workflow smooth for students and staff.',
+        'Taught and supported students one-on-one with detailed explanations and individualised feedback to help them reach their potential.',
+        'Designed and ran training programs for new tutors, covering teaching methodologies and student engagement techniques to maintain quality across the team.',
       ],
-      tags: ['Leadership', 'Training', 'Operations'],
+      tags: ['Teaching', 'Leadership', 'Training', 'Operations'],
     },
   ],
 
@@ -135,43 +194,41 @@ export const PROFILE: Profile = {
       degree: 'Bachelor of Commerce & Computer Science',
       institution: 'UNSW',
       period: '2020 — 2024',
-      detail: 'Majors: Computer Science (General) and Financial Technology.',
+      detail: 'Majors: Computer Science and Financial Technology.',
+    },
+  ],
+
+  certifications: [
+    {
+      name: 'Microsoft Certified: Azure Fundamentals',
+      code: 'AZ-900',
+      issuer: 'Microsoft',
+      issued: 'Apr 2026',
+      credentialUrl:
+        'https://learn.microsoft.com/api/credentials/share/en-gb/AndiYang-6875/C988783A0DC18A51?sharingId=A95305A02BAA5482',
     },
   ],
 
   projects: [
     {
-      title: 'AI Chatbot Platform',
+      title: 'AI Chatbot',
       href: 'https://ai.intu.com.au',
       tags: ['Ruby on Rails', 'LLM APIs', 'MVC'],
       description:
-        'Web interface for an AI tutor aimed at high-school students. Cut per-query cost ~99% by moving from human tutors to API calls.',
+        'Worked as part of the team at Intuition Education to build an AI chatbot platform for high-school students. Cut per-query cost ~99% by replacing manual tutor responses with API calls.',
     },
     {
-      title: 'Dungeon Mania (Backend)',
-      href: '#',
-      tags: ['Java', 'OOP', 'Testing'],
-      description:
-        'Java backend for a puzzle game with user-generated content. OOP design, agile delivery, full unit + integration test coverage.',
-    },
-    {
-      title: 'Customer Satisfaction Analytics',
-      href: '#',
-      tags: ['R', 'Statistics', 'Data Viz'],
-      description:
-        'Led a data project using decision trees and regression to identify drivers of customer satisfaction, built in R.',
-    },
-    {
-      title: 'AndiYangcs.github.io',
+      title: 'Personal Website',
       href: 'https://github.com/AndiYangcs/AndiYangcs.github.io',
       tags: ['Astro', 'React', 'TypeScript'],
-      description: 'This site. Astro + React islands, deployed to GitHub Pages.',
+      description:
+        "You're looking at it right now! A personal playground for making random things, and a way to show you who I am beyond a resume or LinkedIn profile.",
     },
   ],
 
   socials: {
     email: 'andiyang.cs@gmail.com',
     github: 'https://github.com/AndiYangcs',
-    linkedin: 'https://www.linkedin.com/',
+    linkedin: 'https://www.linkedin.com/in/andiyangcsc/',
   },
 };

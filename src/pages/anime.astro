@@ -1,0 +1,39 @@
+﻿---
+import PageLayout from '../layouts/PageLayout.astro';
+import '../styles/hobby-fonts.css';
+---
+<PageLayout title="Anime" persona="personal">
+  <header class="sub-hero">
+    <h1>
+      <span class="sub-hero__emoji" aria-hidden="true">🍥</span>
+      <span class="sub-hero__title hobby-font--anime">Anime</span>
+    </h1>
+    <p>More coming soon.</p>
+    <p class="back"><a href="/personal">← Back to Personal</a></p>
+  </header>
+
+  <style>
+    .sub-hero { padding: var(--space-8) 0 var(--space-6); }
+    .sub-hero h1 {
+      margin: 0 0 var(--space-2);
+      color: var(--accent);
+      display: flex; align-items: baseline; gap: var(--space-3);
+      flex-wrap: wrap;
+    }
+    .sub-hero__emoji {
+      font-size: 2.5rem;
+      line-height: 1;
+    }
+    .sub-hero__title {
+      font-size: 4rem;
+      line-height: 1.05;
+    }
+    .sub-hero p { color: var(--fg-muted); margin: 0 0 var(--space-4); }
+    .sub-hero .back a {
+      font-family: var(--font-mono);
+      font-size: var(--type-sm);
+      color: var(--accent);
+    }
+    .sub-hero .back a:hover { text-decoration: underline; }
+  </style>
+</PageLayout>

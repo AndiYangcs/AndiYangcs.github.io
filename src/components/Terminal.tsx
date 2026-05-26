@@ -4,7 +4,7 @@ import { handleTerminalInput } from '../lib/terminal-input';
 import { PROFILE } from '../lib/profile';
 import { applyTheme } from '../lib/theme';
 
-// Marker line that renders as the interactive Professional/Real choice
+// Marker line that renders as the interactive Professional/Personal choice
 // boxes instead of as typed text.
 const CHOICES_MARKER = '__CHOICES__';
 
@@ -101,9 +101,14 @@ export function Terminal({ playIntro }: { playIntro: boolean }) {
     return shouldPlayLandingIntro({ navType });
   });
 
-  // Initial '$ ' (not '') matches the post-replay assertion in tests: the prompt
-  // character is always visible, even before the typewriter starts.
-  const [typed, setTyped] = useState<string>(animate ? '$ ' : buildEndState());
+  // Before hydration finishes the typewriter can't run, so the SSR'd typed
+  // region would otherwise be just '$ ' for ~2–3 s while React downloads.
+  // Show a friendly placeholder during that gap; the useEffect below replaces
+  // it with '$ ' the moment hydration completes (which is what the
+  // replay/clear tests assert on, so they still pass).
+  const [typed, setTyped] = useState<string>(
+    animate ? '$ loading…' : buildEndState(),
+  );
   const [done, setDone] = useState<boolean>(!animate);
   const [history, setHistory] = useState<
     Array<{ input: string; lines: string[]; isError?: boolean }>
@@ -111,6 +116,7 @@ export function Terminal({ playIntro }: { playIntro: boolean }) {
   const [input, setInput] = useState('');
   const [replayCounter, setReplayCounter] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
+  const skipRef = useRef<boolean>(false);
 
   const [viewport, setViewport] = useState<{ w: number; h: number } | null>(
     () =>
@@ -132,6 +138,7 @@ export function Terminal({ playIntro }: { playIntro: boolean }) {
     if (!animate && replayCounter === 0) return;
 
     let cancelled = false;
+    skipRef.current = false;
     setTyped('$ ');
     setDone(false);
     setHistory([]);
@@ -144,6 +151,11 @@ export function Terminal({ playIntro }: { playIntro: boolean }) {
 
     const step = () => {
       if (cancelled) return;
+      if (skipRef.current) {
+        setTyped(buildEndState());
+        setDone(true);
+        return;
+      }
       if (lineIdx >= INTRO_LINES.length) {
         setDone(true);
         return;
@@ -184,6 +196,16 @@ export function Terminal({ playIntro }: { playIntro: boolean }) {
   useEffect(() => {
     if (done) inputRef.current?.focus();
   }, [done]);
+
+  // Click anywhere on the terminal window during the intro to fast-forward
+  // to the finished state. Once done, this becomes a no-op so the prompt
+  // input and replay button keep their normal click behaviour.
+  const onSkipIntro = () => {
+    if (done) return;
+    skipRef.current = true;
+    setTyped(buildEndState());
+    setDone(true);
+  };
 
   const onSubmit = (e: FormEvent) => {
     e.preventDefault();
@@ -231,7 +253,7 @@ export function Terminal({ playIntro }: { playIntro: boolean }) {
 
   return (
     <section className="terminal" aria-label="Landing terminal">
-      <div className="terminal__window">
+      <div className="terminal__window" onClick={onSkipIntro}>
         <div className="terminal__titlebar" aria-hidden="true">
           <div className="terminal__traffic">
             <span className="terminal__dot terminal__dot--close" />
@@ -272,12 +294,12 @@ export function Terminal({ playIntro }: { playIntro: boolean }) {
                         </a>
                         <a
                           className="terminal__choice"
-                          href="/real"
+                          href="/personal"
                           onClick={onChoice}
-                          aria-label="Real Andi"
+                          aria-label="Personal Andi"
                         >
                           <pre className="terminal__choice-art">{`───────────────────
-|      Real       |
+|    Personal     |
 |      Andi       |
 ───────────────────`}</pre>
                         </a>

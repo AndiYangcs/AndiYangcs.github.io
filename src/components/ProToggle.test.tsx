@@ -20,13 +20,13 @@ describe('ProToggle', () => {
       screen.getByRole('link', { name: /professional/i }),
     ).toHaveAttribute('aria-current', 'page');
     expect(
-      screen.getByRole('link', { name: /real/i }),
+      screen.getByRole('link', { name: /personal/i }),
     ).not.toHaveAttribute('aria-current');
   });
 
-  it('marks active = real on /real', () => {
-    render(<ProToggle current="real" />);
-    expect(screen.getByRole('link', { name: /real/i })).toHaveAttribute(
+  it('marks active = personal on /personal', () => {
+    render(<ProToggle current="personal" />);
+    expect(screen.getByRole('link', { name: /personal/i })).toHaveAttribute(
       'aria-current',
       'page',
     );
@@ -35,7 +35,7 @@ describe('ProToggle', () => {
   it('sets internal-nav flag when clicking the other side', async () => {
     const user = userEvent.setup();
     render(<ProToggle current="professional" />);
-    await user.click(screen.getByRole('link', { name: /real/i }));
+    await user.click(screen.getByRole('link', { name: /personal/i }));
     expect(sessionStorage.getItem('internal-nav')).toBe('1');
   });
 });

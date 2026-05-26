@@ -19,9 +19,9 @@ export const PAGES: SitePage[] = [
     description: 'Resume, projects, and experience',
   },
   {
-    id: 'real',
-    label: 'Real Andi',
-    description: 'The off-duty side',
+    id: 'personal',
+    label: 'Personal Andi',
+    description: 'Life outside of work',
   },
 ];
 

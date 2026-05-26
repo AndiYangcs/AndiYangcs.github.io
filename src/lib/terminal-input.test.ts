@@ -42,7 +42,7 @@ describe('handleTerminalInput', () => {
     if (r.kind === 'text') {
       const text = r.lines.join('\n');
       expect(text).toContain('professional');
-      expect(text).toContain('real');
+      expect(text).toContain('personal');
     }
   });
 
@@ -54,9 +54,9 @@ describe('handleTerminalInput', () => {
   });
 
   it('cd with trailing slash still works', () => {
-    expect(handleTerminalInput('cd real/')).toMatchObject({
+    expect(handleTerminalInput('cd personal/')).toMatchObject({
       kind: 'navigate',
-      href: '/real',
+      href: '/personal',
     });
   });
 

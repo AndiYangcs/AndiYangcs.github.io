@@ -1,15 +1,15 @@
 import { markInternalNav } from '../lib/nav-flag';
 
-export type Persona = 'professional' | 'real';
+export type Persona = 'professional' | 'personal';
 
 const PATHS: Record<Persona, string> = {
   professional: '/professional',
-  real: '/real',
+  personal: '/personal',
 };
 
 const LABELS: Record<Persona, string> = {
   professional: 'Professional',
-  real: 'Real',
+  personal: 'Personal',
 };
 
 export function ProToggle({ current }: { current: Persona }) {
@@ -20,7 +20,7 @@ export function ProToggle({ current }: { current: Persona }) {
         data-side={current}
         aria-hidden="true"
       />
-      {(['professional', 'real'] as const).map((p) => (
+      {(['professional', 'personal'] as const).map((p) => (
         <a
           key={p}
           href={PATHS[p]}
@@ -69,7 +69,7 @@ export function ProToggle({ current }: { current: Persona }) {
           transition: transform 250ms ease;
         }
         .pro-toggle__indicator[data-side="professional"] { left: 4px; transform: translateX(0); }
-        .pro-toggle__indicator[data-side="real"]         { left: 4px; transform: translateX(100%); }
+        .pro-toggle__indicator[data-side="personal"]     { left: 4px; transform: translateX(100%); }
       `}</style>
     </nav>
   );

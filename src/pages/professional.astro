@@ -15,11 +15,18 @@ import { PROFILE } from '../lib/profile';
       </ResumeSection>
 
       <ResumeSection id="skills" title="Skills">
-        <ul class="skills">
+        <dl class="skills">
           {PROFILE.skills.map((group) => (
-            <li><strong>{group.category}:</strong> {group.items.join(', ')}</li>
+            <div class="skills__group">
+              <dt class="skills__category">{group.category}</dt>
+              <dd>
+                <ul class="skills__pills">
+                  {group.items.map((item) => <li>{item}</li>)}
+                </ul>
+              </dd>
+            </div>
           ))}
-        </ul>
+        </dl>
       </ResumeSection>
 
       <ResumeSection id="experience" title="Experience">
@@ -51,6 +58,45 @@ import { PROFILE } from '../lib/profile';
         ))}
       </ResumeSection>
 
+      <ResumeSection id="certifications" title="Certifications">
+        {PROFILE.certifications.map((cert) => (
+          <article class="role cert">
+            <header>
+              <h3>
+                {cert.name}
+                {cert.code && <span class="cert__code">{cert.code}</span>}
+              </h3>
+              <span>{cert.issued}</span>
+            </header>
+            <p class="cert__meta">
+              <span>{cert.issuer}</span>
+              {cert.credentialUrl && (
+                <>
+                  <span class="cert__sep" aria-hidden="true">·</span>
+                  <a
+                    class="cert__verify"
+                    href={cert.credentialUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Verify
+                    <svg
+                      width="12" height="12" viewBox="0 0 24 24"
+                      fill="none" stroke="currentColor" stroke-width="2"
+                      stroke-linecap="round" stroke-linejoin="round"
+                      aria-hidden="true"
+                    >
+                      <path d="M7 17L17 7" />
+                      <path d="M7 7h10v10" />
+                    </svg>
+                  </a>
+                </>
+              )}
+            </p>
+          </article>
+        ))}
+      </ResumeSection>
+
       <ResumeSection id="projects" title="Projects">
         <div class="project-grid">
           {PROFILE.projects.map((p) => (
@@ -62,11 +108,39 @@ import { PROFILE } from '../lib/profile';
       </ResumeSection>
 
       <ResumeSection id="contact" title="Contact">
-        <p>
-          Easiest way to reach me is via
-          <a href={`mailto:${PROFILE.socials.email}`}>email</a> or
-          <a href={PROFILE.socials.linkedin} rel="noopener">LinkedIn</a>.
-        </p>
+        <div class="contact">
+          <a class="contact__email" href={`mailto:${PROFILE.socials.email}`}>
+            {PROFILE.socials.email}
+          </a>
+          <button
+            type="button"
+            class="contact__copy"
+            data-copy-email={PROFILE.socials.email}
+            aria-label={`Copy email address ${PROFILE.socials.email}`}
+          >
+            <svg
+              class="contact__icon contact__icon--copy"
+              width="14" height="14" viewBox="0 0 24 24"
+              fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+            </svg>
+            <svg
+              class="contact__icon contact__icon--check"
+              width="14" height="14" viewBox="0 0 24 24"
+              fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round"
+              aria-hidden="true"
+              hidden
+            >
+              <polyline points="20 6 9 17 4 12" />
+            </svg>
+            <span class="contact__copy-label">Copy</span>
+          </button>
+        </div>
       </ResumeSection>
     </div>
   </div>
@@ -85,7 +159,35 @@ import { PROFILE } from '../lib/profile';
       .resume-grid { grid-template-columns: 1fr; gap: var(--space-6); }
       .resume-content { padding-top: 0; grid-column: auto; }
     }
-    .skills { list-style: none; padding: 0; margin: 0; display: grid; gap: var(--space-2); }
+    .skills { margin: 0; display: grid; gap: var(--space-4); }
+    .skills__group {
+      display: grid;
+      grid-template-columns: minmax(7.5rem, max-content) 1fr;
+      gap: var(--space-4);
+      align-items: baseline;
+    }
+    .skills__category {
+      font-family: var(--font-mono);
+      font-size: var(--type-sm);
+      color: var(--fg-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+    .skills__pills {
+      list-style: none; padding: 0; margin: 0;
+      display: flex; flex-wrap: wrap; gap: var(--space-2);
+    }
+    .skills__pills li {
+      padding: 2px var(--space-2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-pill);
+      font-family: var(--font-mono); font-size: 0.75rem;
+      color: var(--fg);
+      background: var(--bg-elev);
+    }
+    @media (max-width: 600px) {
+      .skills__group { grid-template-columns: 1fr; gap: var(--space-2); }
+    }
     .role { padding: var(--space-4) 0; border-top: 1px solid var(--border); }
     .role:first-of-type { border-top: 0; padding-top: 0; }
     .role header { display: flex; justify-content: space-between; gap: var(--space-4); flex-wrap: wrap; }
@@ -104,5 +206,94 @@ import { PROFILE } from '../lib/profile';
       display: grid; gap: var(--space-4);
       grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
     }
+
+    /* Certifications */
+    .cert h3 { display: inline-flex; align-items: center; gap: var(--space-3); flex-wrap: wrap; }
+    .cert__code {
+      padding: 2px var(--space-2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-pill);
+      font-family: var(--font-mono); font-size: 0.75rem;
+      color: var(--fg-muted);
+      background: var(--bg-elev);
+      font-weight: 500;
+    }
+    .cert__meta {
+      margin: var(--space-2) 0 0;
+      color: var(--fg-muted);
+      font-family: var(--font-mono);
+      font-size: var(--type-sm);
+      display: inline-flex; align-items: center; gap: var(--space-2);
+      flex-wrap: wrap;
+    }
+    .cert__sep { color: var(--border); }
+    .cert__verify {
+      display: inline-flex; align-items: center; gap: 4px;
+      color: var(--accent);
+    }
+    .cert__verify:hover { text-decoration: underline; }
+
+    /* Contact */
+    .contact {
+      display: inline-flex; align-items: center; gap: var(--space-6);
+    }
+    .contact__email {
+      font-family: var(--font-mono);
+      font-size: var(--type-lg);
+      color: var(--accent);
+    }
+    .contact__copy {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 4px 8px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--fg-muted);
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      line-height: 1;
+      transition: color 200ms ease, border-color 200ms ease, background 200ms ease;
+    }
+    .contact__copy:hover { color: var(--accent); border-color: var(--accent); background: var(--accent-soft); }
+    .contact__icon { display: block; }
+    .contact__icon[hidden] { display: none; }
+    .contact__copy.is-copied { color: var(--success, var(--accent)); border-color: currentColor; }
   </style>
+
+  <script>
+    const btn = document.querySelector<HTMLButtonElement>('[data-copy-email]');
+    const label = btn?.querySelector<HTMLSpanElement>('.contact__copy-label');
+    const copyIcon = btn?.querySelector<SVGElement>('.contact__icon--copy');
+    const checkIcon = btn?.querySelector<SVGElement>('.contact__icon--check');
+    if (btn && label && copyIcon && checkIcon) {
+      const email = btn.dataset.copyEmail ?? '';
+      const original = label.textContent ?? 'Copy';
+      let timer: number | undefined;
+      btn.addEventListener('click', async () => {
+        try {
+          await navigator.clipboard.writeText(email);
+        } catch {
+          // Fallback for older browsers / insecure contexts.
+          const ta = document.createElement('textarea');
+          ta.value = email;
+          ta.style.position = 'fixed';
+          ta.style.opacity = '0';
+          document.body.appendChild(ta);
+          ta.select();
+          try { document.execCommand('copy'); } catch {}
+          document.body.removeChild(ta);
+        }
+        btn.classList.add('is-copied');
+        copyIcon.setAttribute('hidden', '');
+        checkIcon.removeAttribute('hidden');
+        label.textContent = 'Copied';
+        if (timer) window.clearTimeout(timer);
+        timer = window.setTimeout(() => {
+          btn.classList.remove('is-copied');
+          checkIcon.setAttribute('hidden', '');
+          copyIcon.removeAttribute('hidden');
+          label.textContent = original;
+        }, 1600);
+      });
+    }
+  </script>
 </PageLayout>

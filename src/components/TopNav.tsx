@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { THEMES, applyTheme, loadSavedTheme, type ThemeId } from '../lib/theme';
 import { markInternalNav } from '../lib/nav-flag';
 
-type Persona = 'professional' | 'real';
+type Persona = 'professional' | 'personal';
 
 export function TopNav({ persona }: { persona: Persona }) {
   const [open, setOpen] = useState(false);
@@ -37,7 +37,7 @@ export function TopNav({ persona }: { persona: Persona }) {
   const onTogglePersona = (target: Persona) => {
     if (target === persona) return;
     markInternalNav();
-    window.location.href = target === 'professional' ? '/professional' : '/real';
+    window.location.href = target === 'professional' ? '/professional' : '/personal';
   };
 
   return (
@@ -72,12 +72,12 @@ export function TopNav({ persona }: { persona: Persona }) {
             type="button"
             className={
               'topnav__pill' +
-              (persona === 'real' ? ' topnav__pill--active' : '')
+              (persona === 'personal' ? ' topnav__pill--active' : '')
             }
-            aria-pressed={persona === 'real'}
-            onClick={() => onTogglePersona('real')}
+            aria-pressed={persona === 'personal'}
+            onClick={() => onTogglePersona('personal')}
           >
-            Real
+            Personal
           </button>
         </div>
       </header>
@@ -109,6 +109,15 @@ export function TopNav({ persona }: { persona: Persona }) {
         </div>
 
         <nav className="side-panel__nav" aria-label="Side menu">
+          <a
+            href="/"
+            className="side-panel__row side-panel__row--link"
+            onClick={() => markInternalNav()}
+          >
+            <span>Home</span>
+            <span aria-hidden="true" className="side-panel__chevron">↩</span>
+          </a>
+
           <div
             className={
               'side-panel__item side-panel__item--expandable' +
@@ -257,6 +266,8 @@ export function TopNav({ persona }: { persona: Persona }) {
           font-size: var(--type-base);
         }
         .side-panel__row:hover { background: var(--accent-soft); color: var(--accent); }
+        .side-panel__row--link { text-decoration: none; }
+        .side-panel__row--link:hover { text-decoration: none; }
         .side-panel__chevron {
           font-family: var(--font-mono);
           color: var(--fg-muted);

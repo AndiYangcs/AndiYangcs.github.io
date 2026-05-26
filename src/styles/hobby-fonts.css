@@ -1,0 +1,22 @@
+﻿/* Themed display fonts for the four hobby personas.
+   Used by /personal cards and the /travel, /gaming, /anime, /sports pages.
+
+   @import MUST be the first rule in the file — browsers ignore @import
+   if any other rule precedes it. */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,700&family=VT323&family=Bebas+Neue&family=Yuji+Mai&display=swap');
+
+.hobby-font--travel {
+  font-family: 'Playfair Display', serif;
+  font-weight: 700;
+  font-style: italic;
+}
+.hobby-font--gaming {
+  font-family: 'VT323', monospace;
+}
+.hobby-font--sports {
+  font-family: 'Bebas Neue', sans-serif;
+  letter-spacing: 0.04em;
+}
+.hobby-font--anime {
+  font-family: 'Yuji Mai', serif;
+}

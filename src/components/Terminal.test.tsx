@@ -27,8 +27,8 @@ describe('Terminal', () => {
       screen.getByRole('link', { name: /professional andi/i }),
     ).toHaveAttribute('href', '/professional');
     expect(
-      screen.getByRole('link', { name: /real andi/i }),
-    ).toHaveAttribute('href', '/real');
+      screen.getByRole('link', { name: /personal andi/i }),
+    ).toHaveAttribute('href', '/personal');
   });
 
   it('shows end state immediately when playIntro=false', () => {
