@@ -66,14 +66,17 @@ The background of the map container is transparent — country shapes sit direct
 
 ### 2.3 Click → popover (desktop, ≥ 768px)
 
-- Anchored to the centroid of the clicked country, offset 12px above by default.
+- Rendered as a fixed-position HTML element overlaid above the map.
+- Anchored to the **click event's viewport coordinates** at the moment the country was activated. Offset 12px above the click point by default.
 - Auto-flip / shift so it never crosses the viewport edge.
 - Width `clamp(240px, 24rem, 320px)`. Height grows with content.
-- Tail/arrow points at the country (purely decorative; can be omitted if positioning logic gets fiddly).
 - Dismissed by:
-  - Click outside the popover (anywhere, including another country — which opens that country's popover)
+  - Click outside the popover (anywhere, including another country — which opens that country's popover at the new click point)
   - `Esc` key
-  - A close affordance is not required on desktop (click-out is enough), but the popover heading row will include a small `×` for clarity.
+  - The small `×` button in the popover's heading row
+  - The user starting to pan or zoom the map (the popover closes; the user re-clicks the country if they want it back)
+
+The "close on pan/zoom" rule is a deliberate v1 simplification: keeping the popover anchored to a country through arbitrary zoom/pan transforms would require continuously projecting the country centroid through the current zoom transform. The cost of that complexity isn't worth it for the chosen interaction style (point → read → close → explore more).
 
 ### 2.4 Click → bottom sheet (mobile, < 768px)
 
@@ -94,7 +97,7 @@ Rendered as a static `<ul>` of visited countries, alphabetised. Each item is a b
 • Norway   (2024)   — Oslo, Bergen, Tromsø
 ```
 
-- Clicking / activating a list item opens the same popover (anchored to that country on the map; the map auto-zooms to fit if the country is currently outside the visible region).
+- Clicking / activating a list item opens the same popover, anchored just below the list item itself (since there's no click point on the map for keyboard activations).
 - Items are keyboard-focusable, in tab order, with the same hover/focus visual treatment as countries on the map.
 - This list is rendered server-side as plain markup so it works with JavaScript disabled — visitors without JS see all the same information as a text-only fallback.
 
@@ -205,13 +208,14 @@ Transitions:
 
 | Event | New state |
 |---|---|
-| Click a visited country | `{ kind: 'country', id, anchor: <country centroid in screen space> }` |
+| Click a visited country | `{ kind: 'country', id, anchor: <click event clientX/clientY> }` |
 | Click an unvisited country | unchanged (countries with no `VISITED` entry are non-interactive) |
-| Click a list item | `{ kind: 'country', id, anchor: <country centroid in screen space> }` + map pans/zooms to ensure visibility |
+| Click a list item | `{ kind: 'country', id, anchor: <bottom-left of the list-item button> }` |
 | Click outside / `Esc` / close button | `{ kind: 'none' }` |
+| Pan or zoom starts | `{ kind: 'none' }` |
 | Resize crosses the 768px breakpoint | unchanged state; the renderer just swaps between popover and bottom sheet |
 
-The `anchor` is recomputed on zoom/pan so the popover stays glued to the country shape while the map moves.
+The `anchor` is captured once at activation time and does not update; pan/zoom dismisses the popover instead.
 
 ---
 
