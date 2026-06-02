@@ -1,4 +1,4 @@
-﻿# Travel Map — Design Spec
+# Travel Map — Design Spec
 
 **Date:** 2026-06-02
 **Owner:** Andi Yang (`AndiYangcs`)
@@ -59,7 +59,7 @@ The background of the map container is transparent — country shapes sit direct
 
 ### 2.2 Pan & zoom
 
-- Scroll-to-zoom (desktop) and pinch-to-zoom (mobile) handled by `react-simple-maps`' `ZoomableGroup`.
+- Scroll-to-zoom (desktop) and pinch-to-zoom (mobile) handled by the library's `ZoomableGroup`.
 - Drag-to-pan with the mouse / touch.
 - On-screen control cluster, anchored bottom-right of the map: `[ + ]  [ − ]  [ ⟲ Reset ]`.
 - Zoom range: `1×` (default fit) to `8×`. Reset returns to `1×` and centres on `[0, 20]` (slight northward bias so most landmass is in view).
@@ -100,7 +100,7 @@ Rendered as a static `<ul>` of visited countries, alphabetised. Each item is a b
 
 ### 2.6 Empty state
 
-If `VISITED` is empty (won''t happen for Andi, but guarded for correctness), the map renders with no countries highlighted and the list section is hidden. The hero copy falls back to a neutral line.
+If `VISITED` is empty (won't happen for Andi, but guarded for correctness), the map renders with no countries highlighted and the list section is hidden. The hero copy falls back to a neutral line.
 
 ---
 
@@ -108,14 +108,14 @@ If `VISITED` is empty (won''t happen for Andi, but guarded for correctness), the
 
 | Concern | Choice | Rationale |
 |---|---|---|
-| Map library | [`react-simple-maps`](https://www.react-simple-maps.io/) | Declarative, ~50 KB gzipped, built on `d3-geo`. Handles projection, zoom, click, hover out of the box. |
+| Map library | [`@vnedyalk0v/react19-simple-maps`](https://www.npmjs.com/package/@vnedyalk0v/react19-simple-maps) | Actively-maintained React 19 fork of `react-simple-maps`. Same declarative API (`ComposableMap`, `Geographies`, `Geography`, `ZoomableGroup`), TypeScript-first, ESM. The upstream `react-simple-maps@3.0.0` caps peer deps at React 18 and has not been updated, so the fork is the safe choice here. |
 | Geo data | [Natural Earth 110m countries](https://github.com/nvkelso/natural-earth-vector) as TopoJSON, served from `public/data/world-110m.json` | ~100 KB gzipped, sufficient resolution for a world-fit view zoomed up to 8×. Self-hosted so no CDN dependency or rate-limit risk. |
-| Projection | `geoEqualEarth` | Modern equal-area projection, low distortion, doesn''t oversize Norway/Greenland the way Mercator does. |
+| Projection | `geoEqualEarth` | Modern equal-area projection, low distortion, doesn't oversize Norway/Greenland the way Mercator does. |
 | Country matching | ISO 3166-1 alpha-3 codes (e.g. `NOR`, `AUS`) — already present in Natural Earth as the `ISO_A3` property | Stable, unambiguous, no name-matching fragility. |
 | Component model | React island via `client:load`, loaded only on `/travel` | Matches existing pattern (`Terminal`, `TopNav`, `ThemeSwitcher`). |
 | Styling | Existing CSS custom properties from `themes.css` / `tokens.css` | Map auto-themes with the 5 palettes; no new colour tokens introduced. |
 
-**No new top-level dependencies beyond `react-simple-maps`.** It pulls in `d3-geo` and `topojson-client` as transitive deps.
+**No new top-level dependencies beyond `@vnedyalk0v/react19-simple-maps`.** It pulls in `d3-geo` and `topojson-client` as transitive deps.
 
 ---
 
@@ -127,7 +127,7 @@ A new exported interface and list added to [`src/lib/profile.ts`](../../../src/l
 export interface VisitedCountry {
   /** ISO 3166-1 alpha-3 code, e.g. "NOR". Matched against ISO_A3 in TopoJSON. */
   code: string;
-  /** Display name. Free-form; doesn''t need to match the geo file. */
+  /** Display name. Free-form; doesn't need to match the geo file. */
   name: string;
   /** Year(s) visited as a free-form string, e.g. "2024" or "2019, 2023" or "2000–". */
   years: string;
@@ -183,7 +183,7 @@ public/
 - `lib/travel.ts` is pure TypeScript — no React, no DOM. Unit-tested with Vitest.
 - `WorldMap.tsx` owns the active-country state, renders the map + list + popover/sheet, and delegates all lookups to `lib/travel.ts`.
 - `CountryPopover.tsx` and `CountryBottomSheet.tsx` are dumb presentational components — they receive a `VisitedCountry` and `onClose` callback. The container picks which one to render based on a `matchMedia('(min-width: 768px)')` hook.
-- `VisitedList.tsx` is rendered server-side from `VISITED` directly (it doesn''t need the TopoJSON), so the no-JS fallback list is in the HTML at first paint.
+- `VisitedList.tsx` is rendered server-side from `VISITED` directly (it doesn't need the TopoJSON), so the no-JS fallback list is in the HTML at first paint.
 
 ---
 
@@ -234,7 +234,7 @@ Hover and focus rings are identical, so keyboard users get the same affordance m
 ## 8. Performance
 
 - The TopoJSON file (~100 KB gzipped) ships from `public/`, fetched once on first visit to `/travel`, cached by the browser thereafter.
-- `react-simple-maps` renders ~250 `<path>` elements. No perf concern at this scale.
+- The map library renders ~250 `<path>` elements. No perf concern at this scale.
 - The map island is `client:load` — loads after the page is interactive, not during initial render.
 - No SSR data fetching, no external API calls, no images. The page works offline after the first visit.
 
@@ -255,7 +255,7 @@ Target: `/travel` should still hit Lighthouse Performance ≥ 90 after this feat
 
 ## 10. Testing
 
-| Layer | What''s tested | Tool |
+| Layer | What's tested | Tool |
 |---|---|---|
 | `lib/travel.ts` helpers (`lookupByCode`, edge cases for unknown codes, etc.) | Unit | Vitest |
 | `WorldMap` selection state transitions (click country → popover; ESC → close; list-item click → popover with same data) | Component | Vitest + React Testing Library + jsdom |
@@ -263,7 +263,7 @@ Target: `/travel` should still hit Lighthouse Performance ≥ 90 after this feat
 | Mobile vs desktop renderer switch | Component | Vitest + RTL with `matchMedia` mocked |
 | Full page render | Manual smoke check | `npm run build` + `npm run preview` |
 
-Geographic rendering (does Norway end up in the right shape on screen?) is **not** unit-tested — it''s a property of `react-simple-maps` + the TopoJSON file, both of which are stable upstream.
+Geographic rendering (does Norway end up in the right shape on screen?) is **not** unit-tested — it's a property of the map library + the TopoJSON file, both of which are stable upstream.
 
 ---
 
@@ -271,9 +271,9 @@ Geographic rendering (does Norway end up in the right shape on screen?) is **not
 
 | Item | Reason | Future option |
 |---|---|---|
-| Photo galleries per country | Decided against (no good photos for most countries; text-only suits the site''s tone) | Add an optional `photos: string[]` field to `VisitedCountry` and a gallery component later |
+| Photo galleries per country | Decided against (no good photos for most countries; text-only suits the site's tone) | Add an optional `photos: string[]` field to `VisitedCountry` and a gallery component later |
 | Trip dates more precise than year | Year is enough storytelling for this scope | Extend `years` to a structured `{ start, end }` |
-| Filtering / sorting (by year, region) | 11 countries doesn''t need it | Easy to add when the list grows |
+| Filtering / sorting (by year, region) | 11 countries doesn't need it | Easy to add when the list grows |
 | Map clustering / multiple trips per country shown as separate pins | Country-level granularity is the chosen scope | Pin overlay layer can be added without changing data model |
 | Stats panel ("X continents, Y countries, Z cities") | Scope creep | One small component reading from `VISITED` later |
 | Sharing a specific country via URL (e.g. `/travel#NOR`) | Nice-to-have, not core | Wire up via hash routing in a follow-up |
@@ -285,8 +285,8 @@ Geographic rendering (does Norway end up in the right shape on screen?) is **not
 
 A v1 build is "done" when:
 
-1. ✅ `/travel` shows an interactive world map with every country Andi has visited filled in the active theme''s accent colour.
-2. ✅ Hovering a visited country (desktop) shows a glow; unvisited countries don''t react.
+1. ✅ `/travel` shows an interactive world map with every country Andi has visited filled in the active theme's accent colour.
+2. ✅ Hovering a visited country (desktop) shows a glow; unvisited countries don't react.
 3. ✅ Clicking a visited country opens a popover (desktop) or bottom sheet (mobile) with name, year(s), cities, and summary.
 4. ✅ Click-outside / `Esc` / the close button dismisses the popover/sheet.
 5. ✅ The map can be panned with drag and zoomed with scroll/pinch; on-screen `+ / − / Reset` controls work for touch users.
