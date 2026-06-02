@@ -1,6 +1,8 @@
-﻿---
-import PageLayout from '../layouts/PageLayout.astro';
-import '../styles/hobby-fonts.css';
+---
+import PageLayout from "../layouts/PageLayout.astro";
+import "../styles/hobby-fonts.css";
+import { PROFILE } from "../lib/profile";
+import { WorldMap } from "../components/travel/WorldMap";
 ---
 <PageLayout title="Travelling" persona="personal">
   <header class="sub-hero">
@@ -8,9 +10,13 @@ import '../styles/hobby-fonts.css';
       <span class="sub-hero__emoji" aria-hidden="true">✈️</span>
       <span class="sub-hero__title hobby-font--travel">Travelling</span>
     </h1>
-    <p>More coming soon.</p>
+    <p>{PROFILE.visited.length} countries and counting. Click one to see what I got up to.</p>
     <p class="back"><a href="/personal">← Back to Personal</a></p>
   </header>
+
+  <section class="travel-map-section" aria-label="World map of visited countries">
+    <WorldMap countries={PROFILE.visited} client:load />
+  </section>
 
   <style>
     .sub-hero { padding: var(--space-8) 0 var(--space-6); }
@@ -20,14 +26,8 @@ import '../styles/hobby-fonts.css';
       display: flex; align-items: baseline; gap: var(--space-3);
       flex-wrap: wrap;
     }
-    .sub-hero__emoji {
-      font-size: 2.5rem;
-      line-height: 1;
-    }
-    .sub-hero__title {
-      font-size: 4rem;
-      line-height: 1.05;
-    }
+    .sub-hero__emoji { font-size: 2.5rem; line-height: 1; }
+    .sub-hero__title { font-size: 4rem; line-height: 1.05; }
     .sub-hero p { color: var(--fg-muted); margin: 0 0 var(--space-4); }
     .sub-hero .back a {
       font-family: var(--font-mono);
@@ -35,5 +35,7 @@ import '../styles/hobby-fonts.css';
       color: var(--accent);
     }
     .sub-hero .back a:hover { text-decoration: underline; }
+
+    .travel-map-section { margin-top: var(--space-6); }
   </style>
 </PageLayout>
