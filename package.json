@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@astrojs/react": "^4.2.0",
+    "@vnedyalk0v/react19-simple-maps": "^2.0.9",
     "astro": "^5.1.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
