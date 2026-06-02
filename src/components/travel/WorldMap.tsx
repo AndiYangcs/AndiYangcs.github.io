@@ -82,10 +82,10 @@ export function WorldMap({ countries }: WorldMapProps) {
     <div className="world-map">
       <div className="world-map__svg-wrap">
         <ComposableMap
-          projection="geoEqualEarth"
-          projectionConfig={{ scale: 155 }}
+          projection="geoMercator"
+          projectionConfig={{ scale: 120, center: [0, 30] }}
           width={800}
-          height={420}
+          height={500}
           style={{ width: "100%", height: "auto" }}
         >
           <ZoomableGroup
@@ -160,14 +160,16 @@ export function WorldMap({ countries }: WorldMapProps) {
         }
         .country--unvisited {
           fill: var(--bg-elev);
-          stroke: var(--border);
+          stroke: #ffffff;
           stroke-width: 0.5;
+          stroke-linejoin: round;
           outline: none;
         }
         .country--visited {
           fill: var(--accent);
-          stroke: var(--bg);
+          stroke: #ffffff;
           stroke-width: 0.5;
+          stroke-linejoin: round;
           cursor: pointer;
           outline: none;
           transition: filter 200ms ease;
