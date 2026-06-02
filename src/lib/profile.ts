@@ -47,6 +47,24 @@ export interface Socials {
   linkedin: string;
 }
 
+export interface VisitedCountry {
+  /**
+   * Numeric ISO 3166-1 code as a 3-character string, e.g. "578" for Norway.
+   * Matched against the `id` field on each feature in
+   * `public/data/world-110m.json` (world-atlas 110m TopoJSON).
+   * Lookup table: https://en.wikipedia.org/wiki/ISO_3166-1_numeric
+   */
+  id: string;
+  /** Human-readable display name shown in the popover/list. */
+  name: string;
+  /** Year(s) visited as a free-form string, e.g. "2024" or "2019, 2023" or "2000–". */
+  years: string;
+  /** Ordered list of cities/regions visited. */
+  cities: string[];
+  /** 1–3 sentence personal note. Plain text; no markdown. */
+  summary: string;
+}
+
 export interface Profile {
   name: string;
   title: string;
@@ -59,6 +77,7 @@ export interface Profile {
   certifications: Certification[];
   projects: Project[];
   socials: Socials;
+  visited: VisitedCountry[];
 }
 
 export const PROFILE: Profile = {
@@ -231,4 +250,112 @@ export const PROFILE: Profile = {
     github: 'https://github.com/AndiYangcs',
     linkedin: 'https://www.linkedin.com/in/andiyangcsc/',
   },
+
+  /**
+   * Countries Andi has visited. The map on /travel reads this list to
+   * highlight visited countries and to render the side list of trips.
+   * IDs are numeric ISO 3166-1 codes; find yours here:
+   * https://en.wikipedia.org/wiki/ISO_3166-1_numeric
+   */
+  visited: [
+    {
+      id: "036",
+      name: "Australia",
+      years: "2000–",
+      cities: ["Sydney", "Melbourne", "Brisbane"],
+      summary:
+        "Home base. Born somewhere else, but everything that matters " +
+        "I learned here.",
+    },
+    {
+      id: "156",
+      name: "China",
+      years: "1998",
+      cities: ["Shenzhen"],
+      summary:
+        "Where I was born. Visits since then have been short, but the " +
+        "food and the pace still feel familiar in a way I can't shake.",
+    },
+    {
+      id: "392",
+      name: "Japan",
+      years: "2019, 2023",
+      cities: ["Tokyo", "Kyoto", "Osaka"],
+      summary:
+        "Comfortably my favourite country to walk around in. Two trips " +
+        "in, still nowhere near done.",
+    },
+    {
+      id: "578",
+      name: "Norway",
+      years: "2024",
+      cities: ["Oslo", "Bergen", "Tromsø"],
+      summary:
+        "Currently my favourite trip. Fjords, the Arctic Circle, and a " +
+        "level of quiet I didn't know cities could have.",
+    },
+    {
+      id: "410",
+      name: "South Korea",
+      years: "2019",
+      cities: ["Seoul"],
+      summary:
+        "A long stopover that turned into one of the best food weeks of " +
+        "my life.",
+    },
+    {
+      id: "702",
+      name: "Singapore",
+      years: "2018, 2024",
+      cities: ["Singapore"],
+      summary:
+        "A reliable layover that I always end up extending. Hawker " +
+        "centres are the main draw.",
+    },
+    {
+      id: "764",
+      name: "Thailand",
+      years: "2022",
+      cities: ["Bangkok", "Chiang Mai"],
+      summary:
+        "First proper trip after the world reopened. Spent more on mango " +
+        "sticky rice than I'm willing to admit.",
+    },
+    {
+      id: "458",
+      name: "Malaysia",
+      years: "2022",
+      cities: ["Kuala Lumpur"],
+      summary:
+        "A quick add-on to the Thailand trip. KL nights and roti canai " +
+        "breakfasts.",
+    },
+    {
+      id: "826",
+      name: "United Kingdom",
+      years: "2017",
+      cities: ["London"],
+      summary:
+        "Family trip. Museums, the Tube, and the realisation that " +
+        "Australian coffee really is better.",
+    },
+    {
+      id: "250",
+      name: "France",
+      years: "2017",
+      cities: ["Paris"],
+      summary:
+        "Same trip as the UK, different vibe. Croissants peaked here " +
+        "and have been a disappointment everywhere else since.",
+    },
+    {
+      id: "380",
+      name: "Italy",
+      years: "2017",
+      cities: ["Rome", "Florence", "Venice"],
+      summary:
+        "Standard European tour stop. Lived on pasta and gelato for ten " +
+        "days. Recommended.",
+    },
+  ],
 };
