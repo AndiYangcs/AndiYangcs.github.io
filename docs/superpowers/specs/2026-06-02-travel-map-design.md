@@ -109,9 +109,9 @@ If `VISITED` is empty (won't happen for Andi, but guarded for correctness), the 
 | Concern | Choice | Rationale |
 |---|---|---|
 | Map library | [`@vnedyalk0v/react19-simple-maps`](https://www.npmjs.com/package/@vnedyalk0v/react19-simple-maps) | Actively-maintained React 19 fork of `react-simple-maps`. Same declarative API (`ComposableMap`, `Geographies`, `Geography`, `ZoomableGroup`), TypeScript-first, ESM. The upstream `react-simple-maps@3.0.0` caps peer deps at React 18 and has not been updated, so the fork is the safe choice here. |
-| Geo data | [Natural Earth 110m countries](https://github.com/nvkelso/natural-earth-vector) as TopoJSON, served from `public/data/world-110m.json` | ~100 KB gzipped, sufficient resolution for a world-fit view zoomed up to 8×. Self-hosted so no CDN dependency or rate-limit risk. |
+| Geo data | [`world-atlas@2.0.2/countries-110m.json`](https://github.com/topojson/world-atlas) (Natural Earth derivative, pre-converted to TopoJSON), served from `public/data/world-110m.json` | ~100 KB gzipped, sufficient resolution for a world-fit view zoomed up to 8×. Self-hosted so no CDN dependency or rate-limit risk. |
 | Projection | `geoEqualEarth` | Modern equal-area projection, low distortion, doesn't oversize Norway/Greenland the way Mercator does. |
-| Country matching | ISO 3166-1 alpha-3 codes (e.g. `NOR`, `AUS`) — already present in Natural Earth as the `ISO_A3` property | Stable, unambiguous, no name-matching fragility. |
+| Country matching | Numeric ISO 3166-1 codes (e.g. `"578"` for Norway, `"036"` for Australia) — the feature `id` field in `world-atlas` TopoJSON | Stable, unambiguous, no name-matching fragility. Numeric codes are slightly less human-readable than alpha-3, but the data shape pairs each one with a human-readable `name` so source files stay clear. |
 | Component model | React island via `client:load`, loaded only on `/travel` | Matches existing pattern (`Terminal`, `TopNav`, `ThemeSwitcher`). |
 | Styling | Existing CSS custom properties from `themes.css` / `tokens.css` | Map auto-themes with the 5 palettes; no new colour tokens introduced. |
 
@@ -125,9 +125,13 @@ A new exported interface and list added to [`src/lib/profile.ts`](../../../src/l
 
 ```ts
 export interface VisitedCountry {
-  /** ISO 3166-1 alpha-3 code, e.g. "NOR". Matched against ISO_A3 in TopoJSON. */
-  code: string;
-  /** Display name. Free-form; doesn't need to match the geo file. */
+  /**
+   * Numeric ISO 3166-1 code as a 3-character string, e.g. "578" for Norway.
+   * Matched against the `id` field on each feature in `world-110m.json`.
+   * Lookup table: https://en.wikipedia.org/wiki/ISO_3166-1_numeric
+   */
+  id: string;
+  /** Human-readable display name shown in the popover/list. */
   name: string;
   /** Year(s) visited as a free-form string, e.g. "2024" or "2019, 2023" or "2000–". */
   years: string;
@@ -140,7 +144,7 @@ export interface VisitedCountry {
 export const VISITED: VisitedCountry[] = [
   // Placeholder seed list — Andi populates the real entries.
   {
-    code: 'NOR',
+    id: '578',
     name: 'Norway',
     years: '2024',
     cities: ['Oslo', 'Bergen', 'Tromsø'],
@@ -152,7 +156,7 @@ export const VISITED: VisitedCountry[] = [
 ];
 ```
 
-The map component looks each entry up by `code`. Unknown codes (typo, country renamed) are silently ignored on render and logged once to `console.warn` in development for diagnosability.
+The map component looks each entry up by `id`. Unknown ids (typo, country missing from TopoJSON) are silently ignored on render and logged once to `console.warn` in development for diagnosability.
 
 The total count shown in the hero (`"11 countries and counting"`) is derived from `VISITED.length` so it stays in sync automatically.
 
@@ -170,7 +174,7 @@ src/
 │       └── VisitedList.tsx       ← keyboard-accessible list rendered below the map
 ├── lib/
 │   ├── profile.ts                ← + VisitedCountry interface, VISITED list
-│   └── travel.ts                 ← pure helpers: lookupByCode, centroidFor, etc.
+│   └── travel.ts                 ← pure helpers: lookupById, isVisited, etc.
 └── pages/
     └── travel.astro              ← composes the hero + <WorldMap client:load />
 public/
@@ -194,16 +198,16 @@ A single piece of state in `WorldMap.tsx`:
 ```ts
 type Selection =
   | { kind: 'none' }
-  | { kind: 'country'; code: string; anchor: { x: number; y: number } };
+  | { kind: 'country'; id: string; anchor: { x: number; y: number } };
 ```
 
 Transitions:
 
 | Event | New state |
 |---|---|
-| Click a visited country | `{ kind: 'country', code, anchor: <country centroid in screen space> }` |
+| Click a visited country | `{ kind: 'country', id, anchor: <country centroid in screen space> }` |
 | Click an unvisited country | unchanged (countries with no `VISITED` entry are non-interactive) |
-| Click a list item | `{ kind: 'country', code, anchor: <country centroid in screen space> }` + map pans/zooms to ensure visibility |
+| Click a list item | `{ kind: 'country', id, anchor: <country centroid in screen space> }` + map pans/zooms to ensure visibility |
 | Click outside / `Esc` / close button | `{ kind: 'none' }` |
 | Resize crosses the 768px breakpoint | unchanged state; the renderer just swaps between popover and bottom sheet |
 
@@ -257,7 +261,7 @@ Target: `/travel` should still hit Lighthouse Performance ≥ 90 after this feat
 
 | Layer | What's tested | Tool |
 |---|---|---|
-| `lib/travel.ts` helpers (`lookupByCode`, edge cases for unknown codes, etc.) | Unit | Vitest |
+| `lib/travel.ts` helpers (`lookupById`, `isVisited`, edge cases for unknown ids, etc.) | Unit | Vitest |
 | `WorldMap` selection state transitions (click country → popover; ESC → close; list-item click → popover with same data) | Component | Vitest + React Testing Library + jsdom |
 | `CountryPopover` and `CountryBottomSheet` rendering of `VisitedCountry` data | Component | Vitest + RTL |
 | Mobile vs desktop renderer switch | Component | Vitest + RTL with `matchMedia` mocked |
