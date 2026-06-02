@@ -93,6 +93,10 @@ export function WorldMap({ countries }: WorldMapProps) {
             center={center}
             minZoom={ZOOM_MIN}
             maxZoom={ZOOM_MAX}
+            translateExtent={[
+              [0, 0],
+              [800, 500],
+            ]}
             onMoveStart={onMoveStart}
             onMoveEnd={onMoveEnd}
           >
