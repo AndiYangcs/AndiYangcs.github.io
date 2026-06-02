@@ -12,6 +12,11 @@ import { useMediaQuery } from "../../lib/use-media-query";
 import { CountryPopover } from "./CountryPopover";
 import { CountryBottomSheet } from "./CountryBottomSheet";
 import { VisitedList } from "./VisitedList";
+// Import the TopoJSON directly so it's bundled with the JS. The map library
+// enforces strict HTTPS-only URL validation when given a string `geography`
+// prop, which rejects relative paths like "/data/world-110m.json". Passing
+// the parsed object instead bypasses the fetch/validation pipeline entirely.
+import worldData from "../../data/world-110m.json";
 
 export interface WorldMapProps {
   countries: readonly VisitedCountry[];
@@ -20,8 +25,6 @@ export interface WorldMapProps {
 type Selection =
   | { kind: "none" }
   | { kind: "country"; id: string; anchor: { x: number; y: number } };
-
-const GEO_URL = "/data/world-110m.json";
 
 const ZOOM_MIN = 1;
 const ZOOM_MAX = 8;
@@ -93,7 +96,7 @@ export function WorldMap({ countries }: WorldMapProps) {
             onMoveStart={onMoveStart}
             onMoveEnd={onMoveEnd}
           >
-            <Geographies geography={GEO_URL}>
+            <Geographies geography={worldData as unknown as object}>
               {({ geographies }: { geographies: GeoFeature[] }) =>
                 geographies.map((geo) => {
                   const visited = isVisited(countries, geo.id);
