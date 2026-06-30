@@ -12,8 +12,8 @@ const sections = [
 ];
 ---
 <aside class="resume-sidebar">
-  <div>
-    <h1>{PROFILE.name}</h1>
+  <div class="resume-sidebar__intro">
+    <h1 class="resume-sidebar__name">{PROFILE.name}</h1>
     <p class="resume-sidebar__role">{PROFILE.title}</p>
     <p class="resume-sidebar__bio">{PROFILE.tagline}</p>
   </div>
@@ -142,10 +142,22 @@ const sections = [
     padding: var(--space-4) 0 var(--space-6);
     overflow: hidden;
   }
-  .resume-sidebar h1 {
+  .resume-sidebar__name {
     margin: 0 0 var(--space-2);
-    font-size: var(--type-3xl);
+    font-family: var(--font-display);
+    font-size: clamp(2.75rem, 5.5vw, 3.75rem);
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    font-weight: 700;
     color: var(--fg);
+    background: linear-gradient(135deg, var(--accent) 0%, var(--fg) 65%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+    /* Prevent descenders ("g", "y") from being clipped by the
+       background-clip: text rendering box. */
+    padding-bottom: 0.08em;
   }
   .resume-sidebar__role {
     margin: 0; color: var(--accent); font-family: var(--font-mono);
@@ -155,6 +167,51 @@ const sections = [
     font-family: var(--font-sans);
     margin-top: var(--space-4);
     line-height: 1.75;
+  }
+  /* One-shot intro animations. */
+  /* Name: blur-focus — starts blurred, wide-spaced, fades in to crisp. */
+  .resume-sidebar__name {
+    animation: name-focus 900ms cubic-bezier(0.22, 1, 0.36, 1) 80ms both;
+  }
+  @keyframes name-focus {
+    from {
+      opacity: 0;
+      filter: blur(14px);
+      letter-spacing: 0.06em;
+      transform: translateY(6px);
+    }
+    60% {
+      opacity: 1;
+    }
+    to {
+      opacity: 1;
+      filter: blur(0);
+      letter-spacing: -0.02em;
+      transform: translateY(0);
+    }
+  }
+  /* Role + tagline: stronger fade-up so it actually reads. */
+  .resume-sidebar__role,
+  .resume-sidebar__bio {
+    opacity: 0;
+    transform: translateY(14px);
+    animation: resume-fade-up 700ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  }
+  .resume-sidebar__role { animation-delay: 340ms; }
+  .resume-sidebar__bio  { animation-delay: 480ms; }
+  @keyframes resume-fade-up {
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .resume-sidebar__name,
+    .resume-sidebar__role,
+    .resume-sidebar__bio {
+      animation: none;
+      opacity: 1;
+      filter: none;
+      transform: none;
+      letter-spacing: -0.02em;
+    }
   }
   .resume-sidebar__nav ul {
     list-style: none; padding: 0; margin: 0;

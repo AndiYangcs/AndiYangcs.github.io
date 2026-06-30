@@ -1,0 +1,819 @@
+---
+import type { FavouriteCategory } from '../lib/profile';
+
+interface Props {
+  categories: FavouriteCategory[];
+}
+const { categories } = Astro.props;
+
+/** Stable, URL-safe id fragment from a label (e.g. "TV" -> "tv"). */
+const slug = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+---
+
+<div class="coverflow-stack">
+  {categories.map((cat) => {
+    const trackId = `coverflow-track-${slug(cat.label)}`;
+    const multi = cat.items.length > 1;
+    return (
+      <section
+        class="coverflow"
+        data-coverflow
+        aria-roledescription="carousel"
+        aria-label={`Favourite ${cat.label.toLowerCase()}`}
+      >
+        <header class="coverflow__header">
+          <span class="coverflow__label">{cat.label}</span>
+          {multi && (
+            <ol class="coverflow__dots">
+              {cat.items.map((item, i) => (
+                <li>
+                  <button
+                    type="button"
+                    class="coverflow__dot"
+                    data-dot-idx={i}
+                    aria-label={`Show ${item.title}`}
+                    aria-current={i === 0 ? 'true' : 'false'}
+                  ></button>
+                </li>
+              ))}
+            </ol>
+          )}
+        </header>
+
+        {/*
+          The stage wraps the viewport AND the arrows. Arrows are siblings of
+          the scrolling viewport, NOT children — otherwise `position: absolute`
+          anchors to the scrollable content box and the right arrow sticks to
+          the last card. The stage is `position: relative` so the arrows
+          anchor to the visible viewport instead.
+        */}
+        <div class="coverflow__stage">
+          {multi && (
+            <button
+              type="button"
+              class="coverflow__arrow coverflow__arrow--prev"
+              aria-label={`Previous ${cat.label.toLowerCase()}`}
+              aria-controls={trackId}
+            >
+              <svg
+                width="20" height="20" viewBox="0 0 24 24"
+                fill="none" stroke="currentColor" stroke-width="2.4"
+                stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"
+              >
+                <polyline points="15 18 9 12 15 6"/>
+              </svg>
+            </button>
+          )}
+
+          <div
+            class="coverflow__viewport"
+            tabindex="0"
+            aria-label={`${cat.label} carousel`}
+          >
+            <div class="coverflow__track" id={trackId} role="list">
+              {cat.items.map((item, i) => {
+                const isLink = !!item.href;
+                const common = {
+                  class: 'coverflow__poster',
+                  'data-poster-idx': i,
+                  'aria-current': i === 0 ? 'true' : 'false',
+                  'aria-label': item.title,
+                  tabindex: i === 0 ? 0 : -1,
+                  role: 'listitem',
+                };
+                const inner = item.image ? (
+                  <img
+                    class="coverflow__poster-img"
+                    src={item.image}
+                    alt=""
+                    loading="lazy"
+                  />
+                ) : (
+                  <span class="coverflow__poster-title">{item.title}</span>
+                );
+                return isLink ? (
+                  <a
+                    {...common}
+                    href={item.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {inner}
+                  </a>
+                ) : (
+                  <button type="button" {...common}>
+                    {inner}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {multi && (
+            <button
+              type="button"
+              class="coverflow__arrow coverflow__arrow--next"
+              aria-label={`Next ${cat.label.toLowerCase()}`}
+              aria-controls={trackId}
+            >
+              <svg
+                width="20" height="20" viewBox="0 0 24 24"
+                fill="none" stroke="currentColor" stroke-width="2.4"
+                stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"
+              >
+                <polyline points="9 18 15 12 9 6"/>
+              </svg>
+            </button>
+          )}
+        </div>
+
+        {/*
+          One meta block per item, rendered up-front and toggled via `hidden`.
+          `aria-live="polite"` announces the new title/meta when the active
+          item changes.
+        */}
+        <div class="coverflow__meta" aria-live="polite">
+          {cat.items.map((item, i) => (
+            <div
+              class="coverflow__meta-item"
+              data-meta-idx={i}
+              hidden={i !== 0 ? true : undefined}
+            >
+              <span class="coverflow__meta-title">{item.title}</span>
+              {item.meta && (
+                <span class="coverflow__meta-sub">{item.meta}</span>
+              )}
+            </div>
+          ))}
+        </div>
+      </section>
+    );
+  })}
+</div>
+
+<style>
+  .coverflow-stack {
+    display: flex; flex-direction: column;
+    gap: var(--space-12);
+  }
+  .coverflow {
+    /* Single source of truth for poster width — used by .coverflow__poster
+       AND by the enhanced track height. */
+    --poster-w: clamp(120px, 14vw, 180px);
+    display: flex; flex-direction: column;
+    gap: var(--space-3);
+  }
+  .coverflow__header {
+    display: flex; align-items: center; gap: var(--space-3);
+  }
+  .coverflow__label {
+    color: var(--accent);
+    font-family: var(--font-mono);
+    font-size: var(--type-sm);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+  .coverflow__dots {
+    display: flex; gap: 6px;
+    margin: 0 0 0 auto; padding: 0;
+    list-style: none;
+  }
+  .coverflow__dots li { display: flex; }
+  .coverflow__dot {
+    width: 6px; height: 6px;
+    padding: 0;
+    border: none;
+    border-radius: 50%;
+    background: var(--border);
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+    transition: background 200ms ease, transform 200ms ease;
+  }
+  .coverflow__dot:hover { transform: scale(1.3); }
+  .coverflow__dot:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+  }
+  .coverflow__dot[aria-current="true"] { background: var(--accent); }
+
+  /* Stage holds viewport + arrows. Relative-positioned so arrows anchor
+     to the visible viewport, not the scrollable content. */
+  .coverflow__stage {
+    position: relative;
+  }
+
+  /* ----------------------------------------------------------------------
+     FALLBACK (no-JS) PRESENTATION
+     A finite, native scroll-snap strip. Fully usable without JavaScript;
+     the active card centres via pure CSS at scrollLeft=0. When JS boots it
+     adds `.coverflow--enhanced` and the rules further down take over with a
+     true infinite, transform-driven coverflow.
+     ---------------------------------------------------------------------- */
+  .coverflow__viewport {
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    overflow-anchor: none;
+    padding: var(--space-4) 0;
+    /* Fade edges with a mask so we don't need pseudo-element overlays that
+       could cover (and visually clip) the scaled-up active poster. */
+    -webkit-mask-image: linear-gradient(
+      90deg, transparent 0%, #000 12%, #000 88%, transparent 100%
+    );
+            mask-image: linear-gradient(
+      90deg, transparent 0%, #000 12%, #000 88%, transparent 100%
+    );
+  }
+  .coverflow__viewport::-webkit-scrollbar { display: none; }
+  .coverflow__viewport:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 4px;
+    border-radius: var(--radius-sm);
+  }
+
+  .coverflow__track {
+    display: flex;
+    align-items: center;
+    gap: var(--space-8);
+    padding-inline: calc(50% - var(--poster-w) / 2);
+    width: max-content;
+  }
+
+  /* Posters — shared shell for both <a> and <button>. */
+  .coverflow__poster {
+    flex-shrink: 0;
+    width: var(--poster-w);
+    aspect-ratio: 2 / 3;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border);
+    background: var(--bg-elev);
+    display: flex; align-items: center; justify-content: center;
+    padding: var(--space-3);
+    color: var(--fg-muted);
+    font-family: var(--font-sans);
+    font-size: var(--type-sm);
+    text-align: center;
+    text-decoration: none;
+    overflow: hidden;
+    position: relative;
+    scroll-snap-align: center;
+    scroll-snap-stop: always;
+    opacity: 0.5;
+    transition:
+      transform 320ms cubic-bezier(0.22, 1, 0.36, 1),
+      opacity 320ms ease,
+      border-color 320ms ease,
+      box-shadow 320ms ease;
+    cursor: pointer;
+    /* Reset <button> defaults so it matches <a>. */
+    appearance: none;
+    -webkit-appearance: none;
+    font: inherit;
+  }
+  .coverflow__poster-img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    display: block;
+    border-radius: inherit;
+  }
+  .coverflow__poster-title {
+    font-weight: 600;
+    color: var(--fg);
+    line-height: 1.3;
+  }
+  .coverflow__poster[aria-current="true"] {
+    transform: scale(1.1);
+    opacity: 1;
+    border-color: var(--accent);
+    box-shadow:
+      0 12px 32px rgba(0, 0, 0, 0.45),
+      0 0 0 1px var(--accent),
+      0 0 40px var(--accent-soft);
+    z-index: 2;
+  }
+  .coverflow__poster:hover { opacity: 0.85; }
+  .coverflow__poster[aria-current="true"]:hover { opacity: 1; }
+
+  /* ----------------------------------------------------------------------
+     ENHANCED (JS) PRESENTATION — infinite transform coverflow
+     The viewport stops scrolling; posters are absolutely positioned around
+     the centre and placed each frame by the controller via inline transforms.
+     ---------------------------------------------------------------------- */
+  .coverflow--enhanced .coverflow__viewport {
+    overflow: hidden;
+    scroll-snap-type: none;
+    touch-action: pan-y;
+    cursor: grab;
+    padding: 0;
+  }
+  .coverflow--enhanced .coverflow__viewport.is-dragging {
+    cursor: grabbing;
+  }
+  .coverflow--enhanced .coverflow__track {
+    position: relative;
+    display: block;
+    width: 100%;
+    /* Poster height is width * 1.5; add room for the scaled (1.1) active card
+       plus its ~40px glow on each side, since the viewport clips both axes. */
+    height: calc(var(--poster-w) * 1.65 + 80px);
+    padding-inline: 0;
+  }
+  .coverflow--enhanced .coverflow__poster {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    /* The controller drives transform + opacity inline every frame, so we
+       must NOT transition those here (it would double-animate). Only the
+       accent border/glow fade. */
+    transition: border-color 320ms ease, box-shadow 320ms ease;
+    scroll-snap-align: none;
+    scroll-snap-stop: normal;
+    will-change: transform, opacity;
+  }
+  /* In enhanced mode the inline transform/opacity own those properties; the
+     active card keeps only its accent border + glow from this rule. */
+  .coverflow--enhanced .coverflow__poster[aria-current="true"] {
+    transform: none;
+    opacity: 1;
+  }
+
+  /* Arrows — siblings of the viewport, anchored to the stage. */
+  .coverflow__arrow {
+    position: absolute; top: 50%;
+    transform: translateY(-50%);
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    background: var(--bg-elev);
+    border: 1px solid var(--border);
+    color: var(--fg);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 4;
+    cursor: pointer;
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    transition: color 150ms ease, border-color 150ms ease,
+                transform 150ms ease, opacity 200ms ease;
+  }
+  .coverflow__arrow:hover,
+  .coverflow__arrow:focus-visible {
+    color: var(--accent);
+    border-color: var(--accent);
+    transform: translateY(-50%) scale(1.08);
+  }
+  .coverflow__arrow--prev { left: var(--space-3); }
+  .coverflow__arrow--next { right: var(--space-3); }
+  .coverflow__arrow[disabled] {
+    opacity: 0.25;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+
+  /* Meta — every item rendered, only the active one visible. */
+  .coverflow__meta {
+    display: flex; justify-content: center;
+    align-items: baseline;
+    text-align: center;
+    min-height: 1.5em;
+  }
+  .coverflow__meta-item {
+    display: flex; justify-content: center;
+    align-items: baseline; gap: var(--space-3);
+    flex-wrap: wrap;
+  }
+  .coverflow__meta-item[hidden] { display: none; }
+  .coverflow__meta-title {
+    font-size: var(--type-lg);
+    font-weight: 700;
+    color: var(--fg);
+  }
+  .coverflow__meta-sub {
+    font-size: var(--type-sm);
+    color: var(--fg-muted);
+    font-family: var(--font-mono);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .coverflow__viewport { scroll-behavior: auto; }
+    .coverflow__poster,
+    .coverflow__arrow { transition: none; }
+  }
+</style>
+
+<script>
+  /**
+   * Coverflow controller — infinite, transform-driven.
+   *
+   * Architecture:
+   *   - The source of truth is `position`: a CONTINUOUS virtual centre on a
+   *     circle (..., -1, 0, 1, 2, ...). `target` is where it should settle.
+   *     The DOM (aria-current, dots, meta, tabindex) is a PROJECTION of the
+   *     committed active index, never the source of truth.
+   *   - Each card's screen offset is its signed circular distance from
+   *     `position`. So the logically-last card naturally sits at -1 (peeking
+   *     left) when item 0 is centred, and item 0 sits at +1 when the last is
+   *     centred. There is no start/end and no seam — the loop is intrinsic.
+   *   - rAF drives `position -> target`; cards are placed by writing inline
+   *     transform/opacity. We never touch native scroll or the page scroll.
+   *   - The server-rendered markup is a finite scroll-snap fallback that
+   *     works with no JS; we progressively enhance by adding
+   *     `.coverflow--enhanced` and taking over layout.
+   */
+
+  type Carousel = {
+    root: HTMLElement;
+    vp: HTMLElement;
+    track: HTMLElement;
+    posters: HTMLElement[];
+    dots: HTMLElement[];
+    metas: HTMLElement[];
+    prev: HTMLButtonElement | null;
+    next: HTMLButtonElement | null;
+
+    count: number;
+    /** Continuous virtual centre (unbounded). */
+    position: number;
+    /** Desired settle point. */
+    target: number;
+    /** Last committed logical index reflected in the DOM. */
+    activeIdx: number;
+
+    /** Distance in px between adjacent card centres. */
+    slotPx: number;
+    /** Flex gap captured from the fallback layout, in px. */
+    gapPx: number;
+    /** Half the viewport width, in px (for visibility culling). */
+    vpHalf: number;
+    reduceMotion: boolean;
+
+    raf: number | null;
+    dragging: boolean;
+    /** Pointer gesture bookkeeping. */
+    pointerId: number | null;
+    startX: number;
+    startY: number;
+    startPosition: number;
+    lastX: number;
+    lastT: number;
+    /** Velocity in items/ms (positive = moving toward higher index). */
+    velocity: number;
+    /** Set after a real drag so the trailing click doesn't navigate. */
+    suppressClick: boolean;
+    /** Move focus to the new active card on the next commit (keyboard nav). */
+    focusOnCommit: boolean;
+    /** Pending snap timer for wheel input. */
+    wheelTimer: number | undefined;
+  };
+
+  const carousels: Carousel[] = [];
+
+  /** Positive modulo. */
+  function mod(i: number, n: number): number {
+    return ((i % n) + n) % n;
+  }
+
+  /** Logical index nearest to the centre. */
+  function activeFromPosition(position: number, n: number): number {
+    return mod(Math.round(position), n);
+  }
+
+  /** The virtual (unwrapped) index of `logical` nearest to `position`. */
+  function virtualIndexNear(
+    position: number,
+    logical: number,
+    n: number,
+  ): number {
+    return logical + Math.round((position - logical) / n) * n;
+  }
+
+  /** Signed circular offset of card `i` from the centre: -1 = left slot. */
+  function signedDelta(i: number, position: number, n: number): number {
+    return virtualIndexNear(position, i, n) - position;
+  }
+
+  // --- Visual mapping from distance-to-centre -------------------------------
+
+  /** Scale: 1.1 at centre, easing down to 0.85 by one slot out. */
+  function scaleFor(a: number): number {
+    return 1.1 - 0.25 * Math.min(a, 1);
+  }
+  /** Opacity: 1 at centre, fading with distance. */
+  function opacityFor(a: number): number {
+    return Math.max(0.12, 1 - 0.5 * a);
+  }
+
+  function render(c: Carousel): void {
+    const { count, position, slotPx } = c;
+    // How many slots fit on one side, capped so a card never appears on both
+    // sides at once (which would alias for small/even counts).
+    const fitRadius = Math.ceil(c.vpHalf / slotPx) + 1;
+    const maxRadius = Math.floor((count - 1) / 2);
+    const radius = Math.max(1, Math.min(fitRadius, maxRadius));
+
+    for (let i = 0; i < count; i++) {
+      const poster = c.posters[i];
+      const d = signedDelta(i, position, count);
+      const a = Math.abs(d);
+
+      if (a > radius + 0.001) {
+        poster.style.visibility = 'hidden';
+        poster.style.pointerEvents = 'none';
+        continue;
+      }
+
+      poster.style.visibility = '';
+      // Only cards at/near the front intercept clicks; deeper ones don't.
+      poster.style.pointerEvents = a < 1.4 ? '' : 'none';
+
+      const x = d * slotPx;
+      poster.style.transform =
+        `translate(calc(-50% + ${x}px), -50%) scale(${scaleFor(a)})`;
+      poster.style.opacity = String(opacityFor(a));
+      poster.style.zIndex = String(100 - Math.round(a * 10));
+    }
+
+    const active = activeFromPosition(position, count);
+    if (active !== c.activeIdx) commitActive(c, active);
+  }
+
+  function commitActive(c: Carousel, idx: number): void {
+    c.activeIdx = idx;
+    c.posters.forEach((p, i) => {
+      const on = i === idx;
+      p.setAttribute('aria-current', on ? 'true' : 'false');
+      p.tabIndex = on ? 0 : -1;
+    });
+    c.dots.forEach((d, i) =>
+      d.setAttribute('aria-current', i === idx ? 'true' : 'false'),
+    );
+    c.metas.forEach((m, i) => {
+      if (i === idx) m.removeAttribute('hidden');
+      else m.setAttribute('hidden', '');
+    });
+    if (c.focusOnCommit) {
+      c.focusOnCommit = false;
+      c.posters[idx]?.focus({ preventScroll: true });
+    }
+  }
+
+  /** Keep `position`/`target` from growing without bound after long use. */
+  function renormalize(c: Carousel): void {
+    const k = Math.round(c.position / c.count);
+    if (k !== 0) {
+      c.position -= k * c.count;
+      c.target -= k * c.count;
+    }
+  }
+
+  function animate(c: Carousel): void {
+    if (c.raf != null) return;
+    const tick = () => {
+      if (c.reduceMotion) {
+        c.position = c.target;
+      } else {
+        c.position += (c.target - c.position) * 0.2;
+        if (Math.abs(c.target - c.position) < 0.0015) c.position = c.target;
+      }
+      render(c);
+      if (c.position === c.target || c.dragging) {
+        c.raf = null;
+        if (c.position === c.target) renormalize(c);
+      } else {
+        c.raf = requestAnimationFrame(tick);
+      }
+    };
+    c.raf = requestAnimationFrame(tick);
+  }
+
+  function goTo(c: Carousel, target: number, focus = false): void {
+    c.target = target;
+    c.focusOnCommit = focus;
+    animate(c);
+  }
+  /** Step by whole items from the current settle point. */
+  function goBy(c: Carousel, dir: number, focus = false): void {
+    goTo(c, Math.round(c.target) + dir, focus);
+  }
+
+  function measure(c: Carousel): void {
+    const w = c.posters[0]?.offsetWidth ?? 0;
+    c.slotPx = w + c.gapPx;
+    c.vpHalf = c.vp.getBoundingClientRect().width / 2;
+  }
+
+  function init(root: HTMLElement): void {
+    const vp = root.querySelector<HTMLElement>('.coverflow__viewport');
+    const track = root.querySelector<HTMLElement>('.coverflow__track');
+    const posters = Array.from(
+      root.querySelectorAll<HTMLElement>('.coverflow__poster'),
+    );
+    const dots = Array.from(
+      root.querySelectorAll<HTMLElement>('.coverflow__dot'),
+    );
+    const metas = Array.from(
+      root.querySelectorAll<HTMLElement>('.coverflow__meta-item'),
+    );
+    const prev = root.querySelector<HTMLButtonElement>(
+      '.coverflow__arrow--prev',
+    );
+    const next = root.querySelector<HTMLButtonElement>(
+      '.coverflow__arrow--next',
+    );
+    // Single-item (or empty) rows keep the static CSS fallback — no loop.
+    if (!vp || !track || posters.length < 2) return;
+
+    // Read the fallback flex gap before we switch layout, so the enhanced
+    // slot spacing matches the original rhythm.
+    const gapPx = parseFloat(getComputedStyle(track).columnGap) || 0;
+
+    const c: Carousel = {
+      root, vp, track, posters, dots, metas, prev, next,
+      count: posters.length,
+      position: 0, target: 0, activeIdx: 0,
+      slotPx: 1, vpHalf: 0, gapPx,
+      reduceMotion: matchMedia('(prefers-reduced-motion: reduce)').matches,
+      raf: null,
+      dragging: false, pointerId: null,
+      startX: 0, startY: 0, startPosition: 0, lastX: 0, lastT: 0,
+      velocity: 0, suppressClick: false, focusOnCommit: false,
+      wheelTimer: undefined,
+    } as Carousel;
+    carousels.push(c);
+
+    root.classList.add('coverflow--enhanced');
+    measure(c);
+    render(c);
+
+    // --- Arrows ---
+    prev?.addEventListener('click', () => goBy(c, -1));
+    next?.addEventListener('click', () => goBy(c, 1));
+
+    // --- Dots (jump to the nearest copy of that logical item) ---
+    dots.forEach((dot) => {
+      dot.addEventListener('click', () => {
+        const idx = Number(dot.dataset.dotIdx);
+        if (!Number.isNaN(idx)) {
+          goTo(c, virtualIndexNear(c.position, idx, c.count));
+        }
+      });
+    });
+
+    // --- Poster click: non-active recentres; active link navigates ---
+    vp.addEventListener('click', (e) => {
+      if (c.suppressClick) {
+        c.suppressClick = false;
+        e.preventDefault();
+        e.stopPropagation();
+        return;
+      }
+      const target = (e.target as HTMLElement).closest<HTMLElement>(
+        '.coverflow__poster',
+      );
+      if (!target) return;
+      const idx = Number(target.dataset.posterIdx);
+      if (Number.isNaN(idx)) return;
+      if (idx !== c.activeIdx) {
+        e.preventDefault();
+        goTo(c, virtualIndexNear(c.position, idx, c.count));
+      }
+      // Active <a> falls through and navigates; active <button> is a no-op.
+    });
+
+    // --- Keyboard (focus anywhere inside this carousel) ---
+    root.addEventListener('keydown', (e) => {
+      const fromPoster =
+        document.activeElement instanceof HTMLElement &&
+        document.activeElement.classList.contains('coverflow__poster');
+      if (e.key === 'ArrowLeft') {
+        e.preventDefault();
+        goBy(c, -1, fromPoster);
+      } else if (e.key === 'ArrowRight') {
+        e.preventDefault();
+        goBy(c, 1, fromPoster);
+      } else if (e.key === 'Home') {
+        e.preventDefault();
+        goTo(c, virtualIndexNear(c.position, 0, c.count), fromPoster);
+      } else if (e.key === 'End') {
+        e.preventDefault();
+        goTo(c, virtualIndexNear(c.position, c.count - 1, c.count), fromPoster);
+      }
+    });
+
+    // --- Pointer drag (mouse + touch via Pointer Events) ---
+    vp.addEventListener('pointerdown', (e) => {
+      if (e.button != null && e.button !== 0) return;
+      c.pointerId = e.pointerId;
+      c.startX = e.clientX;
+      c.startY = e.clientY;
+      c.lastX = e.clientX;
+      c.lastT = e.timeStamp;
+      c.velocity = 0;
+      c.dragging = false; // promoted to true once horizontal intent is clear
+      c.suppressClick = false; // clear any stale flag from a prior gesture
+    });
+
+    vp.addEventListener('pointermove', (e) => {
+      if (c.pointerId !== e.pointerId) return;
+      const dx = e.clientX - c.startX;
+      const dy = e.clientY - c.startY;
+
+      if (!c.dragging) {
+        // Ignore until the gesture is clearly horizontal; let vertical scroll.
+        if (Math.abs(dx) < 5 && Math.abs(dy) < 5) return;
+        if (Math.abs(dy) > Math.abs(dx)) {
+          c.pointerId = null; // vertical — hand back to the page
+          return;
+        }
+        c.dragging = true;
+        vp.classList.add('is-dragging');
+        vp.setPointerCapture(e.pointerId);
+        if (c.raf != null) {
+          cancelAnimationFrame(c.raf);
+          c.raf = null;
+        }
+        // Anchor the drag origin at the current (possibly mid-animation)
+        // position so the grab doesn't jump.
+        c.startX = e.clientX;
+        c.startPosition = c.position;
+      }
+
+      // Drag left advances to higher indices.
+      c.position = c.startPosition - (e.clientX - c.startX) / c.slotPx;
+      c.target = c.position;
+
+      const dt = e.timeStamp - c.lastT;
+      if (dt > 0) {
+        const v = -(e.clientX - c.lastX) / c.slotPx / dt; // items/ms
+        c.velocity = c.velocity * 0.7 + v * 0.3; // smooth
+      }
+      c.lastX = e.clientX;
+      c.lastT = e.timeStamp;
+      render(c);
+    });
+
+    const endDrag = (e: PointerEvent) => {
+      if (c.pointerId !== e.pointerId) return;
+      c.pointerId = null;
+      if (!c.dragging) return;
+      c.dragging = false;
+      c.suppressClick = true;
+      vp.classList.remove('is-dragging');
+      if (vp.hasPointerCapture(e.pointerId)) vp.releasePointerCapture(e.pointerId);
+
+      // Project a short fling, capped so one flick never spins far.
+      const projected = c.position + c.velocity * 120;
+      let snapped = Math.round(projected);
+      const base = Math.round(c.position);
+      snapped = Math.max(base - 2, Math.min(base + 2, snapped));
+      goTo(c, snapped);
+    };
+    vp.addEventListener('pointerup', endDrag);
+    vp.addEventListener('pointercancel', endDrag);
+
+    // --- Wheel / trackpad: only when the intent is horizontal ---
+    vp.addEventListener(
+      'wheel',
+      (e) => {
+        const horizontal = Math.abs(e.deltaX) > Math.abs(e.deltaY) || e.shiftKey;
+        if (!horizontal) return; // never steal vertical page scroll
+        e.preventDefault();
+        let dx = e.shiftKey && e.deltaX === 0 ? e.deltaY : e.deltaX;
+        if (e.deltaMode === 1) dx *= 16; // lines -> px
+        else if (e.deltaMode === 2) dx *= c.vpHalf * 2; // pages -> px
+        if (c.raf != null) {
+          cancelAnimationFrame(c.raf);
+          c.raf = null;
+        }
+        c.position += dx / c.slotPx;
+        c.target = c.position;
+        render(c);
+        window.clearTimeout(c.wheelTimer);
+        c.wheelTimer = window.setTimeout(() => {
+          goTo(c, Math.round(c.position));
+        }, 140);
+      },
+      { passive: false },
+    );
+  }
+
+  // Boot all carousels.
+  document
+    .querySelectorAll<HTMLElement>('[data-coverflow]')
+    .forEach(init);
+
+  // Shared resize hook: remeasure slot/viewport geometry and re-place cards.
+  const remeasureAll = () => {
+    carousels.forEach((c) => {
+      measure(c);
+      render(c);
+    });
+  };
+  if (typeof ResizeObserver !== 'undefined') {
+    const ro = new ResizeObserver(remeasureAll);
+    carousels.forEach((c) => ro.observe(c.vp));
+  } else {
+    window.addEventListener('resize', remeasureAll);
+  }
+</script>

@@ -1,5 +1,7 @@
 ﻿---
 import PageLayout from '../layouts/PageLayout.astro';
+import FavouritesCoverflow from '../components/FavouritesCoverflow.astro';
+import { PROFILE } from '../lib/profile';
 import '../styles/hobby-fonts.css';
 ---
 <PageLayout title="Personal Andi" persona="personal">
@@ -82,33 +84,8 @@ import '../styles/hobby-fonts.css';
   </section>
 
   <section class="personal-section">
-    <h2>Favorites</h2>
-    <div class="favorites">
-      <div>
-        <h3>Films</h3>
-        <ul><li>Avengers: Endgame</li><li>Your Name</li></ul>
-      </div>
-      <div>
-        <h3>TV shows</h3>
-        <ul><li>Arcane</li><li>The Boys</li></ul>
-      </div>
-      <div>
-        <h3>Books</h3>
-        <ul><li>Harry Potter series</li><li>Murder on the Orient Express</li></ul>
-      </div>
-      <div>
-        <h3>Games</h3>
-        <ul><li>Escape From Tarkov</li><li>League of Legends</li></ul>
-      </div>
-      <div>
-        <h3>Food</h3>
-        <ul><li>Subway</li><li>Soft serve</li></ul>
-      </div>
-      <div>
-        <h3>Anime</h3>
-        <ul><li>Frieren</li><li>Mushoku Tensei</li><li>Konosuba</li></ul>
-      </div>
-    </div>
+    <h2>Favourites</h2>
+    <FavouritesCoverflow categories={PROFILE.favourites} />
   </section>
 
   <style>
@@ -117,9 +94,14 @@ import '../styles/hobby-fonts.css';
     .personal-hero p { color: var(--fg-muted); margin: 0; }
     .personal-section { padding: var(--space-8) 0; border-top: 1px solid var(--border); }
     .personal-section h2 {
-      font-family: var(--font-mono); font-size: var(--type-sm);
-      text-transform: uppercase; letter-spacing: 0.12em;
-      color: var(--accent); margin: 0 0 var(--space-4);
+      font-family: var(--font-display);
+      font-size: clamp(1.75rem, 3.5vw, 2.25rem);
+      font-weight: 700;
+      line-height: 1.15;
+      letter-spacing: -0.015em;
+      text-transform: none;
+      color: var(--accent);
+      margin: 0 0 var(--space-4);
     }
     .card-grid {
       list-style: none; padding: 0; margin: 0;
@@ -177,11 +159,6 @@ import '../styles/hobby-fonts.css';
       border: 1px solid var(--border);
       border-radius: var(--radius-md);
     }
-    .favorites {
-      display: grid; gap: var(--space-6);
-      grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
-    }
-    .favorites h3 { margin: 0 0 var(--space-2); font-size: var(--type-base); color: var(--fg); }
-    .favorites ul { margin: 0; padding-left: var(--space-6); color: var(--fg-muted); }
+
   </style>
 </PageLayout>

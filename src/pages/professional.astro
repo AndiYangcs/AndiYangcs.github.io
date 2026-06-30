@@ -11,22 +11,44 @@ import { PROFILE } from '../lib/profile';
 
     <div class="resume-content">
       <ResumeSection id="about" title="About">
-        {PROFILE.about.map((para) => <p>{para}</p>)}
+        <details class="about-card">
+          <summary aria-label="Show more about Andi">
+            <div class="about-highlights">
+              {PROFILE.aboutHighlights.map((h) => (
+                <div class="about-highlights__row">
+                  <span class="about-highlights__label">{h.label}:</span>
+                  <span class="about-highlights__value">{h.value}</span>
+                </div>
+              ))}
+            </div>
+            <span class="about-card__indicator" aria-hidden="true">
+              <span class="about-card__more">Read more</span>
+              <svg
+                width="14" height="14" viewBox="0 0 24 24"
+                fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round"
+              >
+                <polyline points="6 9 12 15 18 9" />
+              </svg>
+            </span>
+          </summary>
+          <div class="about-card__body">
+            {PROFILE.about.map((para) => <p>{para}</p>)}
+          </div>
+        </details>
       </ResumeSection>
 
       <ResumeSection id="skills" title="Skills">
-        <dl class="skills">
+        <ul class="skills">
           {PROFILE.skills.map((group) => (
-            <div class="skills__group">
-              <dt class="skills__category">{group.category}</dt>
-              <dd>
-                <ul class="skills__pills">
-                  {group.items.map((item) => <li>{item}</li>)}
-                </ul>
-              </dd>
-            </div>
+            <li class="skills-card">
+              <h3 class="skills-card__category">{group.category}</h3>
+              <ul class="skills-card__pills">
+                {group.items.map((item) => <li>{item}</li>)}
+              </ul>
+            </li>
           ))}
-        </dl>
+        </ul>
       </ResumeSection>
 
       <ResumeSection id="experience" title="Experience">
@@ -100,7 +122,12 @@ import { PROFILE } from '../lib/profile';
       <ResumeSection id="projects" title="Projects">
         <div class="project-grid">
           {PROFILE.projects.map((p) => (
-            <ProjectCard title={p.title} href={p.href} tags={p.tags}>
+            <ProjectCard
+              title={p.title}
+              liveUrl={p.liveUrl}
+              repoUrl={p.repoUrl}
+              tags={p.tags}
+            >
               {p.description}
             </ProjectCard>
           ))}
@@ -108,38 +135,133 @@ import { PROFILE } from '../lib/profile';
       </ResumeSection>
 
       <ResumeSection id="contact" title="Contact">
-        <div class="contact">
-          <a class="contact__email" href={`mailto:${PROFILE.socials.email}`}>
-            {PROFILE.socials.email}
-          </a>
-          <button
-            type="button"
-            class="contact__copy"
-            data-copy-email={PROFILE.socials.email}
-            aria-label={`Copy email address ${PROFILE.socials.email}`}
+        <div class="contact-grid">
+          <div class="contact-card contact-card--email">
+            <span class="contact-card__icon" aria-hidden="true">
+              <svg
+                width="20" height="20" viewBox="0 0 24 24"
+                fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round"
+              >
+                <rect x="2" y="4" width="20" height="16" rx="2" />
+                <polyline points="22,7 12,13 2,7" />
+              </svg>
+            </span>
+            <span class="contact-card__label">Email</span>
+            <span class="contact-card__handle">{PROFILE.socials.email}</span>
+            <div class="contact-card__actions">
+              <a
+                class="contact-card__cta"
+                href={`mailto:${PROFILE.socials.email}`}
+                aria-label={`Send email to ${PROFILE.socials.email}`}
+              >
+                Send
+                <svg
+                  width="12" height="12" viewBox="0 0 24 24"
+                  fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <line x1="5" y1="12" x2="19" y2="12" />
+                  <polyline points="12 5 19 12 12 19" />
+                </svg>
+              </a>
+              <button
+                type="button"
+                class="contact-card__cta contact-card__cta--ghost"
+                data-copy-email={PROFILE.socials.email}
+                aria-label={`Copy email address ${PROFILE.socials.email}`}
+              >
+                <svg
+                  class="contact-card__icon-sm contact-card__icon-sm--copy"
+                  width="12" height="12" viewBox="0 0 24 24"
+                  fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                </svg>
+                <svg
+                  class="contact-card__icon-sm contact-card__icon-sm--check"
+                  width="12" height="12" viewBox="0 0 24 24"
+                  fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round"
+                  aria-hidden="true"
+                  hidden
+                >
+                  <polyline points="20 6 9 17 4 12" />
+                </svg>
+                <span class="contact-card__copy-label">Copy</span>
+              </button>
+            </div>
+          </div>
+
+          <a
+            class="contact-card"
+            href={PROFILE.socials.github}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="GitHub profile (opens in new tab)"
           >
-            <svg
-              class="contact__icon contact__icon--copy"
-              width="14" height="14" viewBox="0 0 24 24"
-              fill="none" stroke="currentColor" stroke-width="2"
-              stroke-linecap="round" stroke-linejoin="round"
-              aria-hidden="true"
-            >
-              <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
-              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
-            </svg>
-            <svg
-              class="contact__icon contact__icon--check"
-              width="14" height="14" viewBox="0 0 24 24"
-              fill="none" stroke="currentColor" stroke-width="2"
-              stroke-linecap="round" stroke-linejoin="round"
-              aria-hidden="true"
-              hidden
-            >
-              <polyline points="20 6 9 17 4 12" />
-            </svg>
-            <span class="contact__copy-label">Copy</span>
-          </button>
+            <span class="contact-card__icon" aria-hidden="true">
+              <svg
+                width="20" height="20" viewBox="0 0 24 24"
+                fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round"
+              >
+                <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22" />
+              </svg>
+            </span>
+            <span class="contact-card__label">GitHub</span>
+            <span class="contact-card__handle">@AndiYangcs</span>
+            <span class="contact-card__cta contact-card__cta--inline">
+              Visit
+              <svg
+                width="12" height="12" viewBox="0 0 24 24"
+                fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <path d="M7 17L17 7" />
+                <path d="M7 7h10v10" />
+              </svg>
+            </span>
+          </a>
+
+          <a
+            class="contact-card"
+            href={PROFILE.socials.linkedin}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="LinkedIn profile (opens in new tab)"
+          >
+            <span class="contact-card__icon" aria-hidden="true">
+              <svg
+                width="20" height="20" viewBox="0 0 24 24"
+                fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round"
+              >
+                <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
+                <rect x="2" y="9" width="4" height="12" />
+                <circle cx="4" cy="4" r="2" />
+              </svg>
+            </span>
+            <span class="contact-card__label">LinkedIn</span>
+            <span class="contact-card__handle">@andiyangcsc</span>
+            <span class="contact-card__cta contact-card__cta--inline">
+              Visit
+              <svg
+                width="12" height="12" viewBox="0 0 24 24"
+                fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <path d="M7 17L17 7" />
+                <path d="M7 7h10v10" />
+              </svg>
+            </span>
+          </a>
         </div>
       </ResumeSection>
     </div>
@@ -159,40 +281,152 @@ import { PROFILE } from '../lib/profile';
       .resume-grid { grid-template-columns: 1fr; gap: var(--space-6); }
       .resume-content { padding-top: 0; grid-column: auto; }
     }
-    .skills { margin: 0; display: grid; gap: var(--space-4); }
-    .skills__group {
+    /* About — click-to-expand disclosure card */
+    .about-card {
+      margin: 0;
+    }
+    .about-card > summary {
+      list-style: none;
+      cursor: pointer;
+      padding: var(--space-4);
+      background: var(--bg-elev);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--accent);
+      border-radius: var(--radius-md);
+      display: flex; flex-direction: column; gap: var(--space-3);
+      transition: border-color 200ms ease, background 200ms ease;
+    }
+    .about-card > summary::-webkit-details-marker { display: none; }
+    .about-card > summary:hover {
+      border-color: var(--accent);
+      border-left-color: var(--accent);
+      background: var(--accent-soft);
+    }
+    .about-card > summary:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+    .about-highlights {
+      display: grid; gap: var(--space-3);
+    }
+    .about-highlights__row {
       display: grid;
-      grid-template-columns: minmax(7.5rem, max-content) 1fr;
-      gap: var(--space-4);
+      grid-template-columns: minmax(6rem, max-content) 1fr;
+      gap: var(--space-3);
       align-items: baseline;
     }
-    .skills__category {
+    .about-highlights__label {
       font-family: var(--font-mono);
       font-size: var(--type-sm);
-      color: var(--fg-muted);
+      color: var(--accent);
       text-transform: uppercase;
       letter-spacing: 0.08em;
+      font-weight: 500;
     }
-    .skills__pills {
+    .about-highlights__value {
+      color: var(--fg);
+      line-height: 1.55;
+    }
+    .about-card__indicator {
+      display: inline-flex;
+      align-items: center;
+      align-self: flex-end;
+      gap: var(--space-2);
+      padding-top: var(--space-2);
+      border-top: 1px dashed var(--border);
+      width: 100%;
+      justify-content: flex-end;
+      color: var(--fg-muted);
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      transition: color 200ms ease;
+    }
+    .about-card > summary:hover .about-card__indicator { color: var(--accent); }
+    .about-card__indicator svg {
+      transition: transform 250ms cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .about-card[open] .about-card__indicator svg { transform: rotate(180deg); }
+    .about-card[open] .about-card__more::before { content: "Show less"; }
+    .about-card[open] .about-card__more { font-size: 0; }
+    .about-card[open] .about-card__more::before { font-size: 0.75rem; }
+    .about-card__body {
+      padding: var(--space-6) var(--space-2) var(--space-2);
+      animation: about-body-in 360ms cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+    .about-card__body p { margin: 0 0 var(--space-4); }
+    .about-card__body p:last-child { margin-bottom: 0; }
+    @keyframes about-body-in {
+      from { opacity: 0; transform: translateY(-4px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .about-card__body { animation: none; }
+      .about-card__indicator svg { transition: none; }
+    }
+    @media (max-width: 600px) {
+      .about-highlights__row {
+        grid-template-columns: 1fr;
+        gap: var(--space-1);
+      }
+    }
+
+    /* Skills cards */
+    .skills {
+      list-style: none; padding: 0; margin: 0;
+      display: grid; gap: var(--space-4);
+      grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+    }
+    .skills-card {
+      padding: var(--space-4);
+      background: var(--bg-elev);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      display: flex; flex-direction: column; gap: var(--space-3);
+      transition: border-color 200ms ease, box-shadow 200ms ease;
+    }
+    .skills-card:hover { border-color: var(--accent); }
+    .skills-card__category {
+      margin: 0;
+      font-family: var(--font-mono);
+      font-size: var(--type-sm);
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-weight: 500;
+    }
+    .skills-card__pills {
       list-style: none; padding: 0; margin: 0;
       display: flex; flex-wrap: wrap; gap: var(--space-2);
     }
-    .skills__pills li {
+    .skills-card__pills li {
       padding: 2px var(--space-2);
       border: 1px solid var(--border);
       border-radius: var(--radius-pill);
       font-family: var(--font-mono); font-size: 0.75rem;
       color: var(--fg);
-      background: var(--bg-elev);
+      background: var(--bg);
+      transition: color 200ms ease, border-color 200ms ease, background 200ms ease;
     }
-    @media (max-width: 600px) {
-      .skills__group { grid-template-columns: 1fr; gap: var(--space-2); }
+    .skills-card__pills li:hover {
+      color: var(--accent);
+      border-color: var(--accent);
+      background: var(--accent-soft);
+      box-shadow: 0 0 10px var(--accent-soft);
     }
+
     .role { padding: var(--space-4) 0; border-top: 1px solid var(--border); }
     .role:first-of-type { border-top: 0; padding-top: 0; }
     .role header { display: flex; justify-content: space-between; gap: var(--space-4); flex-wrap: wrap; }
     .role h3 { margin: 0 0 var(--space-2); font-size: var(--type-lg); color: var(--fg); }
-    .role header span { color: var(--fg-muted); font-family: var(--font-mono); font-size: var(--type-sm); }
+    .role header span {
+      color: var(--fg);
+      font-family: var(--font-mono);
+      font-size: var(--type-sm);
+      font-weight: 500;
+      white-space: nowrap;
+    }
     .role ul { margin: var(--space-2) 0; padding-left: var(--space-6); }
     .tags { list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: var(--space-2); }
     .tags li {
@@ -201,6 +435,12 @@ import { PROFILE } from '../lib/profile';
       border-radius: var(--radius-pill);
       font-family: var(--font-mono); font-size: 0.75rem;
       color: var(--fg-muted);
+      transition: color 200ms ease, border-color 200ms ease, background 200ms ease;
+    }
+    .tags li:hover {
+      color: var(--accent);
+      border-color: var(--accent);
+      background: var(--accent-soft);
     }
     .project-grid {
       display: grid; gap: var(--space-4);
@@ -233,37 +473,140 @@ import { PROFILE } from '../lib/profile';
     }
     .cert__verify:hover { text-decoration: underline; }
 
-    /* Contact */
-    .contact {
-      display: inline-flex; align-items: center; gap: var(--space-6);
+    /* Contact cards */
+    .contact-grid {
+      display: grid; gap: var(--space-4);
+      grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
     }
-    .contact__email {
+    .contact-card {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      grid-template-areas:
+        "icon label"
+        "icon handle"
+        "actions actions";
+      column-gap: var(--space-3);
+      row-gap: 2px;
+      align-items: center;
+      padding: var(--space-4);
+      background: var(--bg-elev);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      color: var(--fg);
+      text-decoration: none;
+      box-shadow:
+        0 1px 2px rgba(0, 0, 0, 0.25),
+        0 2px 6px rgba(0, 0, 0, 0.18);
+      transition:
+        transform 200ms ease,
+        border-color 200ms ease,
+        background 200ms ease,
+        box-shadow 200ms ease;
+    }
+    a.contact-card:hover,
+    a.contact-card:focus-visible,
+    .contact-card:focus-within {
+      transform: translateY(-3px);
+      border-color: var(--accent);
+      text-decoration: none;
+      box-shadow:
+        0 6px 14px rgba(0, 0, 0, 0.35),
+        0 12px 28px rgba(0, 0, 0, 0.28),
+        0 0 20px var(--accent-soft);
+    }
+    .contact-card__icon {
+      grid-area: icon;
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 2.5rem; height: 2.5rem;
+      border-radius: var(--radius-sm);
+      background: var(--bg);
+      color: var(--accent);
+      border: 1px solid var(--border);
+    }
+    .contact-card__label {
+      grid-area: label;
+      align-self: end;
       font-family: var(--font-mono);
-      font-size: var(--type-lg);
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--fg-muted);
+      line-height: 1.2;
+    }
+    .contact-card__handle {
+      grid-area: handle;
+      align-self: start;
+      font-family: var(--font-mono);
+      font-size: var(--type-sm);
+      color: var(--fg);
+      line-height: 1.3;
+      word-break: break-all;
+    }
+    a.contact-card:hover .contact-card__handle,
+    a.contact-card:focus-visible .contact-card__handle {
       color: var(--accent);
     }
-    .contact__copy {
+    /* Inline "Visit" link styling — used inside the GitHub/LinkedIn anchor cards */
+    .contact-card__cta--inline {
+      grid-area: actions;
+      margin-top: var(--space-3);
+      padding-top: var(--space-3);
+      border-top: 1px dashed var(--border);
       display: inline-flex; align-items: center; gap: 6px;
-      padding: 4px 8px;
+      justify-self: end;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--fg-muted);
+      transition: color 200ms ease;
+    }
+    a.contact-card:hover .contact-card__cta--inline,
+    a.contact-card:focus-visible .contact-card__cta--inline {
+      color: var(--accent);
+    }
+    /* Action row for the Email card (two real buttons) */
+    .contact-card__actions {
+      grid-area: actions;
+      margin-top: var(--space-3);
+      padding-top: var(--space-3);
+      border-top: 1px dashed var(--border);
+      display: flex; flex-wrap: wrap; gap: var(--space-2);
+      justify-content: flex-end;
+    }
+    .contact-card__cta:not(.contact-card__cta--inline) {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 4px 10px;
       border: 1px solid var(--border);
       border-radius: var(--radius-sm);
+      background: var(--bg);
       color: var(--fg-muted);
       font-family: var(--font-mono);
       font-size: 0.75rem;
       line-height: 1;
+      cursor: pointer;
       transition: color 200ms ease, border-color 200ms ease, background 200ms ease;
     }
-    .contact__copy:hover { color: var(--accent); border-color: var(--accent); background: var(--accent-soft); }
-    .contact__icon { display: block; }
-    .contact__icon[hidden] { display: none; }
-    .contact__copy.is-copied { color: var(--success, var(--accent)); border-color: currentColor; }
+    .contact-card__cta:not(.contact-card__cta--inline):hover,
+    .contact-card__cta:not(.contact-card__cta--inline):focus-visible {
+      color: var(--accent);
+      border-color: var(--accent);
+      background: var(--accent-soft);
+      text-decoration: none;
+    }
+    .contact-card__icon-sm { display: block; }
+    .contact-card__icon-sm[hidden] { display: none; }
+    .contact-card__cta.is-copied {
+      color: var(--success, var(--accent));
+      border-color: currentColor;
+    }
   </style>
 
   <script>
     const btn = document.querySelector<HTMLButtonElement>('[data-copy-email]');
-    const label = btn?.querySelector<HTMLSpanElement>('.contact__copy-label');
-    const copyIcon = btn?.querySelector<SVGElement>('.contact__icon--copy');
-    const checkIcon = btn?.querySelector<SVGElement>('.contact__icon--check');
+    const label = btn?.querySelector<HTMLSpanElement>('.contact-card__copy-label');
+    const copyIcon = btn?.querySelector<SVGElement>('.contact-card__icon-sm--copy');
+    const checkIcon = btn?.querySelector<SVGElement>('.contact-card__icon-sm--check');
     if (btn && label && copyIcon && checkIcon) {
       const email = btn.dataset.copyEmail ?? '';
       const original = label.textContent ?? 'Copy';

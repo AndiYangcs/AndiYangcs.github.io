@@ -28,7 +28,10 @@ export interface Education {
 
 export interface Project {
   title: string;
-  href: string;
+  /** Live deployment URL (omit if no public live demo). */
+  liveUrl?: string;
+  /** Source-code repository URL (omit if closed-source). */
+  repoUrl?: string;
   tags: string[];
   description: string;
 }
@@ -45,6 +48,22 @@ export interface Socials {
   email: string;
   github: string;
   linkedin: string;
+}
+
+export interface FavouriteItem {
+  title: string;
+  /** Short meta line shown beneath the centred poster, e.g. "Shinkai · 2016". */
+  meta?: string;
+  /** Path to poster image under /public, e.g. "/posters/films/your-name.jpg". */
+  image?: string;
+  /** External link opened when the centred poster is clicked. */
+  href?: string;
+}
+
+export interface FavouriteCategory {
+  /** Display label, e.g. "Films". */
+  label: string;
+  items: FavouriteItem[];
 }
 
 export interface VisitedCountry {
@@ -65,11 +84,17 @@ export interface VisitedCountry {
   summary: string;
 }
 
+export interface AboutHighlight {
+  label: string;
+  value: string;
+}
+
 export interface Profile {
   name: string;
   title: string;
   location: string;
   tagline: string;
+  aboutHighlights: AboutHighlight[];
   about: string[];
   skills: SkillGroup[];
   experience: Role[];
@@ -77,6 +102,7 @@ export interface Profile {
   certifications: Certification[];
   projects: Project[];
   socials: Socials;
+  favourites: FavouriteCategory[];
   visited: VisitedCountry[];
 }
 
@@ -88,6 +114,27 @@ export const PROFILE: Profile = {
   tagline:
     'Building practical AI agents and tools that quietly take real work ' +
     "off people's plates.",
+
+  aboutHighlights: [
+    {
+      label: 'What I do',
+      value:
+        'AI Engineer at Westpac, building LLM-powered automation for ' +
+        'enterprise workflows.',
+    },
+    {
+      label: 'Specialty',
+      value:
+        'The practical end of AI — agent design, evaluation, RAG, and ' +
+        'the orchestration that turns demos into reliable tools.',
+    },
+    {
+      label: 'Impact',
+      value:
+        'Previously cut per-query cost ~99% at a high-school tutoring ' +
+        'centre by replacing manual tutor responses with API calls.',
+    },
+  ],
 
   about: [
     "I'm currently a Graduate AI Engineer at Westpac, where I work on " +
@@ -185,19 +232,19 @@ export const PROFILE: Profile = {
     },
     {
       role: 'Software Developer',
-      company: 'Intuition Education',
+      company: 'High-School Tutoring Centre',
       period: 'Jan 2025 — Sep 2025',
       bullets: [
+        'Reduced per-query cost ~99% by replacing manual tutor responses with API calls.',
         'Collaborated with the team to plan, build, and test an AI chatbot platform for high-school students on Ruby on Rails.',
         'Owned the front-end interface, prioritising accessibility and usability for a student audience.',
         'Worked across the MVC stack, connecting front-end components to backend logic through a Git-based feature-branch workflow.',
-        'Reduced per-query cost ~99% by replacing manual tutor responses with API calls.',
       ],
       tags: ['Ruby on Rails', 'MVC', 'AI/LLM APIs', 'Git'],
     },
     {
       role: 'Senior Teacher & TnL Coordinator',
-      company: 'Intuition Education',
+      company: 'High-School Tutoring Centre',
       period: 'Feb 2020 — Present',
       bullets: [
         'Oversaw daily operations as a junior manager for teachers and tutors, keeping workflow smooth for students and staff.',
@@ -231,14 +278,14 @@ export const PROFILE: Profile = {
   projects: [
     {
       title: 'AI Chatbot',
-      href: 'https://ai.intu.com.au',
+      liveUrl: 'https://ai.intu.com.au',
       tags: ['Ruby on Rails', 'LLM APIs', 'MVC'],
       description:
-        'Worked as part of the team at Intuition Education to build an AI chatbot platform for high-school students. Cut per-query cost ~99% by replacing manual tutor responses with API calls.',
+        'Worked as part of the team at a high-school tutoring centre to build an AI chatbot platform for students. Cut per-query cost ~99% by replacing manual tutor responses with API calls.',
     },
     {
       title: 'Personal Website',
-      href: 'https://github.com/AndiYangcs/AndiYangcs.github.io',
+      repoUrl: 'https://github.com/AndiYangcs/AndiYangcs.github.io',
       tags: ['Astro', 'React', 'TypeScript'],
       description:
         "You're looking at it right now! A personal playground for making random things, and a way to show you who I am beyond a resume or LinkedIn profile.",
@@ -250,6 +297,68 @@ export const PROFILE: Profile = {
     github: 'https://github.com/AndiYangcs',
     linkedin: 'https://www.linkedin.com/in/andiyangcsc/',
   },
+
+  /**
+   * Coverflow data for the Favourites section on /personal.
+   * Add `image: "/posters/<category>/<file>.jpg"` per item once you've
+   * downloaded the poster art. Leave it omitted and the card renders
+   * blank with just the title visible.
+   */
+  favourites: [
+    {
+      label: 'Games',
+      items: [
+        { title: 'Escape From Tarkov', meta: 'BSG · 2017', image: '/posters/games/escape-from-tarkov.jpg' },
+        { title: 'League of Legends', meta: 'Riot · 2009', image: '/posters/games/lol.jpg' },
+        { title: 'PUBG: Battlegrounds', meta: 'Krafton · 2017', image: '/posters/games/pubg.jpg' },
+        { title: 'Minecraft', meta: 'Mojang · 2011', image: '/posters/games/minecraft.webp' },
+        { title: 'Stardew Valley', meta: 'ConcernedApe · 2016', image: '/posters/games/stardew-valley.jpg' },
+        { title: 'Terraria', meta: 'Re-Logic · 2011', image: '/posters/games/terraria.jpg' },
+        { title: "Don't Starve", meta: 'Klei · 2013', image: '/posters/games/dont-starve.jpg' },
+        { title: 'Palworld', meta: 'Pocketpair · 2024', image: '/posters/games/palworld.jpg' },
+      ],
+    },
+    {
+      label: 'Films',
+      items: [
+        { title: 'Inception', meta: 'Nolan · 2010', image: '/posters/films/inception.jpg' },
+        { title: 'Avengers: Infinity War', meta: 'Marvel · 2018', image: '/posters/films/avengers-infinity-war.jpg' },
+        { title: 'Avengers: Endgame', meta: 'Marvel · 2019', image: '/posters/films/avengers-endgame.jpg' },
+        { title: 'Your Name', meta: 'Shinkai · 2016', image: '/posters/films/your-name.png' },
+        { title: 'Interstellar', meta: 'Nolan · 2014', image: '/posters/films/interstellar.jpg' },
+        { title: 'Oppenheimer', meta: 'Nolan · 2023', image: '/posters/films/oppenheimer.jpg' },
+      ],
+    },
+    {
+      label: 'Anime',
+      items: [
+        { title: 'Frieren', meta: 'Madhouse · 2023', image: '/posters/anime/frieren.jpg' },
+        { title: 'Mushoku Tensei', meta: 'Studio Bind · 2021', image: '/posters/anime/mushoku-tensei.jpg' },
+        { title: 'Konosuba', meta: 'Studio Deen · 2016', image: '/posters/anime/konosuba.jpg' },
+        { title: 'Jujutsu Kaisen', meta: 'MAPPA · 2020', image: '/posters/anime/jujutsu-kaisen.jpg' },
+        { title: 'Chainsaw Man', meta: 'MAPPA · 2022', image: '/posters/anime/chainsaw-man.jpg' },
+        { title: 'Kaguya-sama: Love Is War', meta: 'A-1 Pictures · 2019', image: '/posters/anime/kaguya-sama.jpg' },
+        { title: 'Attack on Titan', meta: 'WIT / MAPPA · 2013', image: '/posters/anime/attack-on-titan.jpg' },
+      ],
+    },
+    {
+      label: 'TV',
+      items: [
+        { title: 'Arcane', meta: 'Netflix · 2021', image: '/posters/tv/arcane.jpg' },
+        { title: 'The Boys', meta: 'Prime · 2019', image: '/posters/tv/the-boys.jpg' },
+        { title: 'Breaking Bad', meta: 'AMC · 2008', image: '/posters/tv/breaking-bad.jpg' },
+        { title: 'The Office', meta: 'NBC · 2005', image: '/posters/tv/the-office.jpg' },
+      ],
+    },
+    {
+      label: 'Books',
+      items: [
+        { title: 'Harry Potter series', meta: 'Rowling · 1997–2007', image: '/posters/books/harry-potter.jpg' },
+        { title: 'Murder on the Orient Express', meta: 'Christie · 1934', image: '/posters/books/murder-on-the-orient-express.jpg' },
+        { title: 'Year 12 Cambridge Ext 2 Maths Textbook', meta: 'Cambridge', image: '/posters/books/cambridge-ext2-maths.jpg' },
+      ],
+    },
+  ],
 
   /**
    * Countries Andi has visited. The map on /travel reads this list to

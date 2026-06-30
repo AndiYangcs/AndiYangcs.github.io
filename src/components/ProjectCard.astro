@@ -1,30 +1,96 @@
 ---
-interface Props { title: string; href?: string; tags: string[]; }
-const { title, href = '#', tags } = Astro.props;
+interface Props {
+  title: string;
+  liveUrl?: string;
+  repoUrl?: string;
+  tags: string[];
+}
+const { title, liveUrl, repoUrl, tags } = Astro.props;
 ---
-<a class="project-card" href={href} rel="noopener">
+<article class="project-card">
   <h3>{title}</h3>
   <p><slot /></p>
   <ul class="project-card__tags">
     {tags.map((t) => <li>{t}</li>)}
   </ul>
-</a>
+  {(liveUrl || repoUrl) && (
+    <div class="project-card__ctas">
+      {liveUrl && (
+        <a
+          class="project-card__cta"
+          href={liveUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label={`View live demo of ${title} (opens in new tab)`}
+        >
+          <svg
+            width="14" height="14" viewBox="0 0 24 24"
+            fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <path d="M15 3h6v6" />
+            <path d="M10 14L21 3" />
+            <path d="M21 14v7H3V3h7" />
+          </svg>
+          View Live
+        </a>
+      )}
+      {repoUrl && (
+        <a
+          class="project-card__cta"
+          href={repoUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label={`View source code of ${title} on GitHub (opens in new tab)`}
+        >
+          <svg
+            width="14" height="14" viewBox="0 0 24 24"
+            fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22" />
+          </svg>
+          View Repo
+        </a>
+      )}
+    </div>
+  )}
+</article>
 <style>
   .project-card {
+    /* height: 100% so cards in the same grid row stretch to equal height,
+       allowing margin-top: auto on .project-card__ctas to align the CTA
+       row across all cards regardless of description/tag length. */
+    height: 100%;
     display: flex; flex-direction: column; gap: var(--space-3);
     padding: var(--space-6);
     background: var(--bg-elev);
     border: 1px solid var(--border);
     border-radius: var(--radius-md);
     color: var(--fg);
-    transition: transform 200ms ease, border-color 200ms ease, background 200ms ease;
+    box-shadow:
+      0 1px 2px rgba(0, 0, 0, 0.25),
+      0 2px 6px rgba(0, 0, 0, 0.18);
+    transition:
+      transform 200ms ease,
+      border-color 200ms ease,
+      background 200ms ease,
+      box-shadow 200ms ease;
   }
-  .project-card:hover {
-    transform: translateY(-3px);
+  .project-card:hover,
+  .project-card:focus-within {
+    transform: translateY(-4px);
     border-color: var(--accent);
-    text-decoration: none;
+    box-shadow:
+      0 6px 14px rgba(0, 0, 0, 0.35),
+      0 12px 28px rgba(0, 0, 0, 0.28),
+      /* Accent glow */
+      0 0 24px var(--accent-soft);
   }
   .project-card h3 { margin: 0; color: var(--accent); font-size: var(--type-lg); }
+  .project-card p { margin: 0; line-height: 1.6; }
   .project-card__tags {
     list-style: none; padding: 0; margin: 0;
     display: flex; flex-wrap: wrap; gap: var(--space-2);
@@ -36,4 +102,28 @@ const { title, href = '#', tags } = Astro.props;
     font-family: var(--font-mono); font-size: 0.75rem;
     color: var(--fg-muted);
   }
+  .project-card__ctas {
+    margin-top: auto;
+    padding-top: var(--space-3);
+    display: flex; flex-wrap: wrap; gap: var(--space-2);
+  }
+  .project-card__cta {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 6px 12px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-family: var(--font-mono); font-size: 0.75rem;
+    color: var(--fg-muted);
+    text-decoration: none;
+    transition: color 200ms ease, border-color 200ms ease, background 200ms ease, transform 200ms ease;
+  }
+  .project-card__cta:hover,
+  .project-card__cta:focus-visible {
+    color: var(--accent);
+    border-color: var(--accent);
+    background: var(--accent-soft);
+    text-decoration: none;
+    transform: translateY(-1px);
+  }
+  .project-card__cta svg { display: block; }
 </style>
