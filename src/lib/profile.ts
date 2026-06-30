@@ -96,6 +96,8 @@ export interface Profile {
   tagline: string;
   aboutHighlights: AboutHighlight[];
   about: string[];
+  /** Short, quirky one-liners shown in the Fortune Cookie widget on /personal. */
+  funFacts: string[];
   skills: SkillGroup[];
   experience: Role[];
   education: Education[];
@@ -160,6 +162,14 @@ export const PROFILE: Profile = {
       'the patient work of understanding a process well enough to delegate ' +
       'the right part of it. I care about solutions that quietly reduce ' +
       'real overhead rather than ones that look impressive in a demo.',
+  ],
+
+  funFacts: [
+    'The last physical book I finished completely was my Year 12 Cambridge Ext 2 Maths textbook.',
+    "I've tried every sub on the Subway menu.",
+    "I prefer Matcha over Coffee",
+    "Andi is my chinese name, not a typo",
+    "I named my cat Cola because he was black and white, and I was drinking coke at the time."
   ],
 
   skills: [

@@ -1,0 +1,284 @@
+---
+interface Props {
+  /** Fun-fact strings revealed one at a time when a cookie is cracked. */
+  facts: string[];
+}
+const { facts } = Astro.props;
+---
+
+<div class="fc" data-fortune data-facts={JSON.stringify(facts)}>
+  <div class="fc-card">
+    <button class="fc-close" type="button" hidden aria-label="Close and reset">✕</button>
+
+    <div class="fc-stage">
+      <!-- shared SVG assets -->
+      <svg width="0" height="0" aria-hidden="true" focusable="false"><defs>
+        <g id="ckbodyA">
+          <path fill="#FCAB40" d="M15 22s-1.15 2.749-2.15 4.749-1.666 5.227.325 6.245c3.033 1.553 8.578.574 11.825-.994 2.724-1.316 5.179-3.085 7-6 1.746-2.794 3-6 3-8s-.147-3.591-.862-5.71c-.53-1.57-1.392-3.463-2.94-5.077-1.819-1.896-2.635-3.805-3.582-5.158C26.806.896 26 0 24 0s-7 3-10 4-7 2-10 6-3 8-3 10 .062 4.885 2 6c2.305 1.327 5.575-1.634 8.045-2.356C13.392 22.958 15 22 15 22z"/>
+          <path fill="#F4900C" d="M33.717 21.334s-2.613 3.554-4.048 4.478c-.774.498-1.62 1.01-2.703 1.515-.694.324-3.792 1.55-4.621 1.805-1.408.433-3.285.83-4.26.866-.975.036-1.805-.004-3.223.179-.872.112-2.156.615-2.192 1.193-.036.578 1.011 1.625 3.105 1.733 2.094.108 5.997-.177 8.375-1.227 3.321-1.467 5.307-3.285 6.282-4.44.974-1.156 2.707-4.008 3.285-6.102z"/>
+          <path fill="#BF6952" d="M33.717 21.334s-1.733 2.166-3.149 3.353c-.936.785-2.937 2.181-4.396 2.893-1.48.722-4.315 1.651-6.318 1.949-1.697.253-4.345.526-5.235.722-.859.189-1.287.458-1.047.758.362.452 1.236.34 2.563.172 3.114-.394 5.932-.988 8.337-1.977 2.457-1.011 4.876-2.274 5.851-3.43s2.35-2.455 3.394-4.44z"/>
+          <path fill="#F4900C" d="M22.85 3.969c-.681 1.36-2.713 4.517-3.85 6.426-1.353 2.271-3.117 5.018-4.074 7.605-.295.798-.935 3.768-.819 4.466.56-.271.893-.466.893-.466s1.172-2.255 2.182-3.807c1.011-1.552 4.404-7.473 5.668-9.567 1.264-2.094 1.763-4.16 1.588-5.218-.252-1.535-1.086-.441-1.588.561z"/>
+          <path fill="#BF6952" d="M22.886 5.738c-.714 1.489-2.711 4.657-3.637 6.426-.926 1.769-3.42 6.148-4.413 8.664-.177.449-.359.977-.43 1.489C14.819 22.11 15 22 15 22s1.172-2.255 2.182-3.807c1.011-1.552 4.404-7.473 5.668-9.567.974-1.614 1.489-3.206 1.596-4.337-.287-1.312-1.089.467-1.56 1.449z"/>
+        </g>
+        <g id="note1" transform="rotate(-15 25 24)">
+          <linearGradient id="fcPaper" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#fffef8"/><stop offset=".55" stop-color="#fdf6e6"/><stop offset="1" stop-color="#eaddc2"/>
+          </linearGradient>
+          <rect x="11" y="18" width="28" height="12.5" rx="2.2" fill="url(#fcPaper)"/>
+          <rect x="11" y="18" width="28" height="3.2" rx="1.6" fill="#ffffff" opacity=".45"/>
+          <path d="M18 18.4 Q16.8 24 18 30.1" stroke="#e3d4af" stroke-width=".8" fill="none" opacity=".7"/>
+          <path d="M31 18.4 Q29.9 24 31 30.1" stroke="#e3d4af" stroke-width=".7" fill="none" opacity=".5"/>
+          <ellipse cx="39" cy="24.25" rx="2.3" ry="6.25" fill="#f6edd3"/>
+          <ellipse cx="11" cy="24.25" rx="2.6" ry="6.4" fill="#ece0bf" stroke="#d6c79c" stroke-width=".7"/>
+          <path d="M11 20.2 C13.4 21.2 12.8 24 11.4 24.6 C10 25.2 11 27.4 11 28.2" fill="none" stroke="#c7b585" stroke-width=".85" stroke-linecap="round"/>
+          <path d="M11 21.9 C12.4 22.6 12.1 24 11.4 24.4" fill="none" stroke="#c7b585" stroke-width=".7" stroke-linecap="round"/>
+          <path d="M39 18.6 c4 -1.6 5.6 .6 4.2 2.4 c-1 -1.4 -2.6 -1.2 -4.2 -.4" fill="#fffef8" stroke="#e3d4af" stroke-width=".6"/>
+        </g>
+        <clipPath id="fcLeftA"><path d="M-12 -12 L18 1 L15 7 L20 13 L14 19 L21 25 L16 30 L18 35 L-12 42 Z"/></clipPath>
+        <clipPath id="fcRightA"><path d="M48 -12 L18 1 L15 7 L20 13 L14 19 L21 25 L16 30 L18 35 L48 42 Z"/></clipPath>
+      </defs></svg>
+
+      <!-- bowl: back rim -> cookies -> front of bowl -->
+      <div class="fc-layer fc-bowl">
+        <svg class="fc-bowl-svg" viewBox="0 0 120 84" aria-hidden="true">
+          <ellipse class="fc-bowl-back" cx="60" cy="42" rx="50" ry="12"/>
+          <g transform="translate(22 26) scale(0.8)"><use href="#ckbodyA"/></g>
+          <g transform="translate(46 20) scale(0.95)"><use href="#ckbodyA"/></g>
+          <g transform="translate(74 27) scale(0.78)"><use href="#ckbodyA"/></g>
+          <path class="fc-bowl-front" d="M10 42 Q60 60 110 42 Q103 82 60 82 Q17 82 10 42 Z"/>
+          <path class="fc-bowl-rim" d="M10 42 Q60 60 110 42" fill="none"/>
+        </svg>
+      </div>
+
+      <!-- whole cookie (lift target) -->
+      <div class="fc-layer fc-whole-layer is-hidden">
+        <div class="fc-whole"><svg class="fc-cookie-svg" viewBox="0 0 36 36" aria-hidden="true"><use href="#ckbodyA"/></svg></div>
+      </div>
+
+      <!-- crumbs -->
+      <div class="fc-crumb"></div><div class="fc-crumb"></div><div class="fc-crumb"></div>
+
+      <!-- halves (each centred by its wrapper; the inner div animates) -->
+      <div class="fc-layer fc-halves-layer is-hidden">
+        <div class="fc-half-wrap"><div class="fc-lh"><svg class="fc-half-svg" viewBox="0 0 36 36" aria-hidden="true">
+          <g clip-path="url(#fcLeftA)"><use href="#ckbodyA"/></g>
+          <path clip-path="url(#fcLeftA)" d="M18 1 L15 7 L20 13 L14 19 L21 25 L16 30 L18 35" fill="none" stroke="#F9E4B0" stroke-width="2.4"/>
+          <path clip-path="url(#fcLeftA)" d="M18 1 L15 7 L20 13 L14 19 L21 25 L16 30 L18 35" fill="none" stroke="#E0A24A" stroke-width=".8" opacity=".7"/>
+        </svg></div></div>
+        <div class="fc-half-wrap"><div class="fc-rh"><svg class="fc-half-svg" viewBox="0 0 36 36" aria-hidden="true">
+          <g clip-path="url(#fcRightA)"><use href="#ckbodyA"/></g>
+          <path clip-path="url(#fcRightA)" d="M18 1 L15 7 L20 13 L14 19 L21 25 L16 30 L18 35" fill="none" stroke="#F9E4B0" stroke-width="2.4"/>
+          <path clip-path="url(#fcRightA)" d="M18 1 L15 7 L20 13 L14 19 L21 25 L16 30 L18 35" fill="none" stroke="#E0A24A" stroke-width=".8" opacity=".7"/>
+        </svg></div></div>
+      </div>
+
+      <!-- rolled note -->
+      <div class="fc-layer fc-note-layer is-hidden">
+        <div class="fc-note"><svg class="fc-note-svg" viewBox="0 0 52 48" aria-hidden="true"><use href="#note1"/></svg></div>
+      </div>
+
+      <!-- unrolled slip -->
+      <div class="fc-layer fc-slip-layer is-hidden">
+        <div class="fc-slip" role="status" aria-live="polite">
+          <div class="fc-slip-lbl">FUN FACT</div>
+          <div class="fc-slip-text"></div>
+        </div>
+      </div>
+    </div>
+
+    <p class="fc-prompt">Click below to crack a cookie ↓</p>
+    <button class="fc-open" type="button">Open a cookie 🥠</button>
+    <p class="fc-hint">A different random fun fact each time</p>
+  </div>
+</div>
+
+<style>
+  .fc { width: 100%; }
+  .fc-card {
+    position: relative;
+    width: 100%;
+    max-width: 34rem;
+    margin-inline: auto;
+    background: var(--bg-elev);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: var(--space-4);
+  }
+
+  .fc-close {
+    position: absolute; top: var(--space-3); right: var(--space-3);
+    width: 30px; height: 30px; border-radius: var(--radius-pill);
+    border: 1px solid var(--border); background: var(--bg);
+    color: var(--fg-muted); font-size: 0.9rem; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: color .12s, border-color .12s, background .12s; z-index: 5;
+  }
+  .fc-close:hover { color: var(--accent); border-color: var(--accent); background: var(--accent-soft); }
+  .fc-close[hidden] { display: none; }
+
+  .fc-stage { position: relative; height: 460px; }
+  .fc-layer { position: absolute; left: 50%; top: 26%; transform: translate(-50%, -50%); will-change: transform; }
+  .fc-layer.fc-bowl { top: auto; bottom: -30px; }
+  .is-hidden { display: none !important; }
+
+  .fc svg { overflow: visible; display: block; }
+  .fc-cookie-svg { width: 130px; height: auto; filter: drop-shadow(0 10px 14px rgba(0,0,0,.55)); }
+  .fc-half-svg { width: 130px; height: auto; filter: drop-shadow(0 8px 12px rgba(0,0,0,.55)); }
+  .fc-note-svg { width: 84px; height: auto; filter: drop-shadow(0 6px 8px rgba(0,0,0,.55)); }
+  .fc-bowl-svg { width: 230px; height: auto; filter: drop-shadow(0 10px 16px rgba(0,0,0,.5)); }
+
+  .fc-bowl-back { fill: var(--bg); stroke: var(--border); stroke-width: 1.5; }
+  .fc-bowl-front { fill: var(--bg-elev); stroke: var(--border); stroke-width: 1.5; }
+  .fc-bowl-rim { stroke: var(--fg-muted); stroke-width: 2; opacity: .5; }
+
+  .fc-half-wrap { position: absolute; left: 0; top: 0; transform: translate(-50%, -50%); }
+  .fc-lh, .fc-rh { will-change: transform; }
+
+  .fc-crumb {
+    position: absolute; left: 50%; top: 26%; width: 5px; height: 5px;
+    border-radius: 50%; background: #e0a24a; transform: translate(-50%, -50%); opacity: 0;
+  }
+
+  .fc-slip {
+    background: linear-gradient(#fffef8, #f3ead2); color: #2a241a;
+    border-radius: var(--radius-sm); padding: var(--space-5) var(--space-6); width: 420px; max-width: 86vw;
+    box-shadow: 0 8px 20px rgba(0,0,0,.55); transform-origin: left center;
+    font-family: Georgia, "Times New Roman", serif;
+  }
+  .fc-slip-lbl { font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.2em; color: #b8860b; margin-bottom: var(--space-3); text-align: center; }
+  .fc-slip-text { font-size: 0.95rem; line-height: 1.6; text-align: center; }
+
+  .fc-prompt { text-align: center; color: var(--accent); font-size: var(--type-sm); margin: var(--space-4) 0 0; animation: fc-bob 2s ease-in-out infinite; }
+  @keyframes fc-bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(3px); } }
+
+  .fc-open {
+    display: block; margin: var(--space-4) auto 0;
+    background: var(--accent); color: var(--bg); border: none;
+    border-radius: var(--radius-pill); padding: 9px 22px;
+    font-family: var(--font-mono); font-size: var(--type-sm); font-weight: 700; cursor: pointer;
+    transition: transform .12s, filter .12s;
+  }
+  .fc-open:hover { filter: brightness(1.08); }
+  .fc-open:active { transform: scale(.96); }
+  .fc-open:disabled { opacity: .5; cursor: default; }
+
+  .fc-hint { text-align: center; color: var(--fg-muted); font-size: 0.68rem; margin-top: var(--space-3); }
+
+  @media (prefers-reduced-motion: reduce) {
+    .fc-prompt { animation: none; }
+  }
+</style>
+
+<script>
+  import { createFortunePicker } from '../lib/fortune';
+
+  function setup(root: HTMLElement) {
+    let facts: string[] = [];
+    try { facts = JSON.parse(root.dataset.facts || '[]'); } catch { facts = []; }
+
+    const q = <T extends HTMLElement>(sel: string) => root.querySelector(sel) as T;
+    const bowl = q('.fc-bowl');
+    const wholeL = q('.fc-whole-layer'), whole = q('.fc-whole');
+    const halvesL = q('.fc-halves-layer'), lh = q('.fc-lh'), rh = q('.fc-rh');
+    const noteL = q('.fc-note-layer'), note = q('.fc-note');
+    const slipL = q('.fc-slip-layer'), slip = q('.fc-slip'), slipText = q('.fc-slip-text');
+    const btn = q<HTMLButtonElement>('.fc-open'), closeBtn = q<HTMLButtonElement>('.fc-close');
+    const prompt = q('.fc-prompt');
+    const crumbs = Array.from(root.querySelectorAll('.fc-crumb')) as HTMLElement[];
+
+    if (!facts.length) { root.hidden = true; return; }
+
+    const nextIndex = createFortunePicker(facts.length);
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const anim = (el: Element, frames: Keyframe[], opts: KeyframeAnimationOptions) =>
+      el.animate(frames, Object.assign({ fill: 'forwards' as FillMode }, opts)).finished;
+
+    function reset() {
+      [whole, lh, rh, note, slip, ...crumbs].forEach((el) => {
+        el.getAnimations().forEach((a) => a.cancel());
+        el.style.transform = '';
+        el.style.opacity = '';
+      });
+      [wholeL, halvesL, noteL, slipL].forEach((el) => el.classList.add('is-hidden'));
+      crumbs.forEach((c) => (c.style.opacity = '0'));
+    }
+
+    function toDefault() {
+      reset();
+      bowl.style.transition = 'opacity .3s'; bowl.style.opacity = '1';
+      prompt.classList.remove('is-hidden');
+      btn.disabled = false; btn.textContent = 'Open a cookie 🥠';
+      closeBtn.hidden = true;
+    }
+
+    function finish() {
+      btn.disabled = false;
+      btn.textContent = 'Open another cookie 🥠';
+    }
+
+    async function play() {
+      btn.disabled = true;
+      reset();
+      closeBtn.hidden = false;
+      slipText.textContent = facts[nextIndex()];
+      prompt.classList.add('is-hidden');
+      bowl.style.transition = 'opacity .3s'; bowl.style.opacity = '.4';
+
+      if (reduce) {
+        slipL.classList.remove('is-hidden');
+        slip.style.transform = 'scaleX(1)';
+        finish();
+        return;
+      }
+
+      wholeL.classList.remove('is-hidden');
+      await anim(whole, [
+        { transform: 'translateY(235px) scale(.45)', opacity: 0 },
+        { transform: 'translateY(0) scale(1)', opacity: 1 },
+      ], { duration: 520, easing: 'cubic-bezier(.2,.85,.25,1)' });
+
+      await anim(whole, [
+        { transform: 'rotate(0deg)' }, { transform: 'rotate(-5deg)' }, { transform: 'rotate(5deg)' },
+        { transform: 'rotate(-3deg)' }, { transform: 'rotate(3deg)' }, { transform: 'rotate(0deg)' },
+      ], { duration: 340, easing: 'ease-in-out' });
+
+      wholeL.classList.add('is-hidden');
+      halvesL.classList.remove('is-hidden');
+      crumbs.forEach((c, i) => {
+        const dx = (i - 1) * 14, dy = 10 + i * 4;
+        anim(c, [
+          { transform: 'translate(-50%,-50%)', opacity: 1 },
+          { transform: `translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px))`, opacity: 0 },
+        ], { duration: 520, easing: 'ease-out' });
+      });
+      await Promise.all([
+        anim(lh, [{ transform: 'translate(0,0) rotate(0)' }, { transform: 'translate(-30px,-18px) rotate(-17deg)' }], { duration: 380, easing: 'cubic-bezier(.3,1.3,.5,1)' }),
+        anim(rh, [{ transform: 'translate(0,0) rotate(0)' }, { transform: 'translate(30px,-18px) rotate(17deg)' }], { duration: 380, easing: 'cubic-bezier(.3,1.3,.5,1)' }),
+      ]);
+
+      noteL.classList.remove('is-hidden');
+      await anim(note, [
+        { transform: 'translateY(-26px) scale(.55) rotate(-8deg)', opacity: 0, offset: 0 },
+        { transform: 'translateY(-6px) scale(.62) rotate(-12deg)', opacity: 1, offset: .35 },
+        { transform: 'translateY(44px) scale(.62) rotate(-15deg)', offset: .78 },
+        { transform: 'translateY(36px) scale(.62) rotate(-14deg)', offset: 1 },
+      ], { duration: 640, easing: 'cubic-bezier(.35,.65,.3,1)' });
+
+      noteL.classList.add('is-hidden');
+      slipL.classList.remove('is-hidden');
+      slip.style.transformOrigin = 'left center';
+      await anim(slip, [
+        { transform: 'translateY(36px) scaleX(0)', opacity: .4 },
+        { transform: 'translateY(20px) scaleX(1)', opacity: 1 },
+      ], { duration: 440, easing: 'cubic-bezier(.2,.8,.25,1)' });
+      await anim(slipText, [{ opacity: 0 }, { opacity: 1 }], { duration: 240 });
+
+      finish();
+    }
+
+    btn.addEventListener('click', play);
+    closeBtn.addEventListener('click', toDefault);
+  }
+
+  document.querySelectorAll<HTMLElement>('[data-fortune]').forEach(setup);
+</script>

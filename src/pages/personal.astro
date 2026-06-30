@@ -1,6 +1,7 @@
 ﻿---
 import PageLayout from '../layouts/PageLayout.astro';
 import FavouritesCoverflow from '../components/FavouritesCoverflow.astro';
+import FortuneCookies from '../components/FortuneCookies.astro';
 import { PROFILE } from '../lib/profile';
 import '../styles/hobby-fonts.css';
 ---
@@ -77,10 +78,7 @@ import '../styles/hobby-fonts.css';
 
   <section class="personal-section">
     <h2>Fun facts</h2>
-    <ul>
-      <li>The last physical book I finished completely was my Year 12 Cambridge Ext 2 Maths textbook.</li>
-      <li>I've tried every sub on the Subway menu.</li>
-    </ul>
+    <FortuneCookies facts={PROFILE.funFacts} />
   </section>
 
   <section class="personal-section">
